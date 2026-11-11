@@ -1,0 +1,720 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1e1b1b">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>EOT Cranes</title>
+<style>
+:root{--bg:#f1efee;--card:#fff;--ink:#1e1b1b;--mute:#6b6666;--line:#e4e1e0;--red:#d0202a;--redsoft:#fbe3e5;--amber:#e8a317;--ambersoft:#fdf1d3;--green:#2e8b57;--greensoft:#dcefe3;--blue:#2f6fb0;--bluesoft:#dce9f6;--field:#faf9f9}
+@media (prefers-color-scheme:dark){:root{--bg:#111;--card:#1e1b1b;--ink:#f2efef;--mute:#a49e9e;--line:#332e2e;--red:#ee4a53;--redsoft:#4a1c20;--amber:#f0b43c;--ambersoft:#44360f;--green:#4cb97c;--greensoft:#17372a;--blue:#6aa7e6;--bluesoft:#1b2f44;--field:#262222}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font:15px/1.4 Arial,Helvetica,sans-serif}
+#app{max-width:480px;min-height:100%;margin:0 auto;background:var(--bg);position:relative;padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+@media(min-width:520px){body{background:#2b2727}#app{box-shadow:0 0 40px #0008}}
+.top{position:sticky;top:0;z-index:10;background:#1e1b1b;color:#fff;display:flex;align-items:center;gap:8px;padding:calc(10px + env(safe-area-inset-top)) 12px 10px;border-bottom:3px solid #d0202a}
+.top h1{font-size:17px;margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ib{background:none;border:0;color:#fff;font-size:22px;width:38px;height:38px;border-radius:19px;cursor:pointer}
+.ib:active{background:#fff3}
+.pad{padding:14px}
+.hero{background:#1e1b1b;color:#fff;border-radius:14px;padding:16px;margin-bottom:14px}
+.hero b{font-size:20px;display:block}.hero span{color:#ff8a92;font-size:13px}.hero small{display:block;color:#bbb;margin-top:6px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.stat{background:var(--card);border-radius:12px;padding:10px;border-left:4px solid var(--red)}
+.stat i{font-style:normal;font-size:24px;font-weight:bold;display:block}.stat span{font-size:11px;color:var(--mute)}
+.menu{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mbtn{background:var(--card);border:0;border-radius:16px;padding:18px 12px;text-align:left;color:var(--ink);font:inherit;cursor:pointer;box-shadow:0 1px 3px #0002;min-height:112px;display:block;width:100%}
+.mbtn:active{transform:scale(.97)}
+.mbtn .ic{font-size:30px;display:block;margin-bottom:6px}.mbtn b{display:block;font-size:15px}.mbtn span{font-size:12px;color:var(--mute)}
+.mbtn.red{background:var(--red);color:#fff}.mbtn.red span{color:#ffd6d9}
+.sec{font-size:12px;font-weight:bold;color:var(--mute);letter-spacing:.6px;margin:18px 4px 8px;text-transform:uppercase}
+.card{background:var(--card);border-radius:14px;padding:12px 14px;margin-bottom:10px;box-shadow:0 1px 2px #0001}
+.li{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:14px;padding:12px 14px;margin-bottom:8px;cursor:pointer;box-shadow:0 1px 2px #0001;color:inherit;text-decoration:none;border:0;width:100%;text-align:left;font:inherit}
+.li:active{background:var(--line)}
+.li .m{flex:1;min-width:0}.li b{display:block}.li small{color:var(--mute);display:block}.li .n{font-size:12.5px;color:var(--mute);margin-top:2px}
+.li .arr{color:var(--mute);font-size:18px}
+.big{font-size:26px}
+.tag{display:inline-block;padding:2px 9px;border-radius:10px;font-size:11px;font-weight:bold;white-space:nowrap}
+.ok{background:var(--greensoft);color:var(--green)}.watch{background:var(--ambersoft);color:#9a6a00}.over{background:var(--red);color:#fff}.re{background:var(--bluesoft);color:var(--blue)}.gray{background:var(--line);color:var(--mute)}
+@media(prefers-color-scheme:dark){.watch{color:var(--amber)}}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 13px;border-radius:18px;font:inherit;font-size:13px;white-space:nowrap;cursor:pointer}
+.chip.on{background:var(--red);border-color:var(--red);color:#fff}
+.search{width:100%;padding:11px 14px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;font:inherit;margin-bottom:10px}
+.fab{position:fixed;right:max(16px,calc(50% - 224px));bottom:calc(88px + env(safe-area-inset-bottom));z-index:12;width:56px;height:56px;border-radius:28px;border:0;background:var(--red);color:#fff;font-size:30px;box-shadow:0 4px 12px #0006;cursor:pointer}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--card);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding-bottom:env(safe-area-inset-bottom);z-index:11}
+.nav a{display:flex;flex-direction:column;align-items:center;gap:1px;padding:8px 0 7px;font-size:10.5px;color:var(--mute);text-decoration:none;font-weight:bold}
+.nav a span{font-size:21px}.nav a.on{color:var(--red)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th{text-align:left;background:var(--red);color:#fff;padding:6px 7px;font-size:11.5px}td{padding:6px 7px;border-bottom:1px solid var(--line)}
+.tw{overflow-x:auto;margin:-2px -4px}
+td.c,th.c{text-align:center}.pend{background:var(--ambersoft);color:#9a6a00;text-align:center;font-size:11px}
+.kv{display:grid;grid-template-columns:120px 1fr;gap:6px 10px;font-size:14px}.kv dt{color:var(--mute)}.kv dd{margin:0;font-weight:bold}
+h3{margin:0 0 8px;font-size:14px}
+.sheet-bg{position:fixed;inset:0;background:#0007;z-index:30;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--card);width:100%;max-width:480px;max-height:92vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:16px 16px calc(18px + env(safe-area-inset-bottom))}
+.sheet h2{margin:0 0 12px;font-size:17px}
+.fld{margin-bottom:12px}.fld label{display:block;font-size:12px;color:var(--mute);margin-bottom:4px;font-weight:bold}
+.fld input,.fld select,.fld textarea{width:100%;padding:12px;font:inherit;font-size:16px;border:1px solid var(--line);background:var(--field);color:var(--ink);border-radius:10px}
+.fld textarea{min-height:70px}
+.calc{background:var(--bluesoft);color:var(--blue);padding:9px 12px;border-radius:10px;font-size:13px;margin-bottom:12px;font-weight:bold}
+.btns{display:flex;gap:8px;margin-top:6px}
+.btn{flex:1;padding:13px;border-radius:12px;border:0;font:inherit;font-weight:bold;cursor:pointer;background:var(--line);color:var(--ink)}
+.btn.p{background:var(--red);color:#fff}.btn.d{background:var(--redsoft);color:var(--red);flex:0 0 auto}
+.toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#1e1b1b;color:#fff;padding:10px 18px;border-radius:20px;z-index:40;font-size:13px;box-shadow:0 4px 12px #0006}
+.empty{text-align:center;color:var(--mute);padding:34px 10px}.empty b{display:block;font-size:30px}
+.seg{display:flex;background:var(--line);border-radius:12px;padding:3px;margin-bottom:12px}
+.seg button{flex:1;border:0;background:none;padding:9px;border-radius:10px;font:inherit;font-size:13px;font-weight:bold;color:var(--mute);cursor:pointer}.seg button.on{background:var(--card);color:var(--red);box-shadow:0 1px 3px #0003}
+.tap tr:not(:first-child){cursor:pointer}.tap tr:not(:first-child):active{background:var(--line)}
+.note{font-size:12px;color:var(--mute);margin:8px 4px}
+.sum{display:flex;gap:8px;margin-bottom:10px}.sum div{flex:1;background:var(--card);border-radius:12px;padding:8px 10px;font-size:11px;color:var(--mute)}.sum b{display:block;font-size:20px;color:var(--ink)}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const D={"specs": [{"crane": "Crane 1", "hoist": "Main 10 T", "std": 16, "length": 430, "kw": [""]}, {"crane": "Crane 2", "hoist": "Main 15 T", "std": 18, "length": 430, "kw": ["main"]}, {"crane": "Crane 2", "hoist": "Aux 10 T", "std": 16, "length": 430, "kw": ["aux"]}, {"crane": "Crane 3", "hoist": "Busbar side 20 T", "std": 18, "length": 430, "kw": ["busbar"]}, {"crane": "Crane 3", "hoist": "Cabin side 20 T", "std": 18, "length": 430, "kw": ["cabin"]}, {"crane": "Crane 4", "hoist": "Main 15 T", "std": 18, "length": 430, "kw": ["main"]}, {"crane": "Crane 5", "hoist": "Main 15 T", "std": 18, "length": 500, "kw": ["main"]}, {"crane": "Crane 6", "hoist": "Main 50 T", "std": 24, "length": 760, "kw": ["main"]}, {"crane": "Crane 6", "hoist": "Aux 20 T", "std": 18, "length": 600, "kw": ["aux"]}, {"crane": "Crane 7", "hoist": "Main 50 T", "std": 24, "length": 760, "kw": ["main"]}, {"crane": "Crane 7", "hoist": "Aux 20 T", "std": 18, "length": 600, "kw": ["aux"]}, {"crane": "Crane N2", "hoist": "Main 70 T (rope 1)", "std": 32, "length": 450, "kw": null}, {"crane": "Crane N2", "hoist": "Main 70 T (rope 2)", "std": 32, "length": 450, "kw": null}, {"crane": "Crane N2", "hoist": "Aux 30 T", "std": 22, "length": 620, "kw": null}, {"crane": "Crane N1", "hoist": "Cabin side 15 T", "std": 18, "length": 430, "kw": ["cabin", "magnet"]}, {"crane": "Crane N1", "hoist": "Busbar side 15 T", "std": 18, "length": 430, "kw": ["busbar", "auxiliary"]}], "cranes": [{"crane": "Crane 1", "config": "Single hoist", "rating": "10 Ton", "aux_status": "N/A", "ctype": "QD", "code": "411010E05201800086", "mech": [{"name": "Long travel", "ratio": 15.75, "cd": 350, "rpm": 955, "kw": 5.5}, {"name": "Cross travel", "ratio": 22.4, "cd": 400, "rpm": 908, "kw": 2.2}, {"name": "Main hoist", "ratio": 23.24, "cd": 300, "rpm": 975, "kw": 22}, {"name": "Aux / 2nd hoist", "ratio": null, "cd": null, "rpm": null, "kw": null}]}, {"crane": "Crane N1", "config": "Dual hoist", "rating": "15/15 Ton", "aux_status": "In service", "ctype": "QD", "code": "427 041537202508000", "mech": [{"name": "Long travel", "ratio": 23.34, "cd": 500, "rpm": 952, "kw": 9}, {"name": "Cross travel", "ratio": 22.4, "cd": 400, "rpm": 930, "kw": 3}, {"name": "Main hoist", "ratio": 48.57, "cd": 650, "rpm": 975, "kw": 30}, {"name": "Aux / 2nd hoist", "ratio": 48.57, "cd": 650, "rpm": 975, "kw": 30}]}, {"crane": "Crane 2", "config": "Main + Aux", "rating": "15/10 Ton", "aux_status": "In service", "ctype": "QD", "code": "411010E05201800084", "mech": [{"name": "Long travel", "ratio": 23.34, "cd": 500, "rpm": 970, "kw": 7.5}, {"name": "Cross travel", "ratio": 22.4, "cd": 400, "rpm": 935, "kw": 5}, {"name": "Main hoist", "ratio": 48.57, "cd": 650, "rpm": 974, "kw": 33}, {"name": "Aux / 2nd hoist", "ratio": 31.5, "cd": 500, "rpm": 975, "kw": 28}]}, {"crane": "Crane 3", "config": "Twin carriage", "rating": "20/20 Ton", "aux_status": "In service", "ctype": "QE", "code": "411010E05201800082", "mech": [{"name": "Long travel", "ratio": 23.34, "cd": 500, "rpm": 970, "kw": 7.5}, {"name": "Cross travel", "ratio": 22.4, "cd": 400, "rpm": 930, "kw": 5.5}, {"name": "Main hoist", "ratio": 40.17, "cd": 650, "rpm": 976, "kw": 40}, {"name": "Aux / 2nd hoist", "ratio": 40.17, "cd": 650, "rpm": 976, "kw": 40}]}, {"crane": "Crane 4", "config": "Main + Aux (aux idle)", "rating": "15/10 Ton", "aux_status": "Not in service", "ctype": "QD", "code": "411010E05201800084", "mech": [{"name": "Long travel", "ratio": 23.34, "cd": 500, "rpm": 970, "kw": 7.5}, {"name": "Cross travel", "ratio": 22.4, "cd": 400, "rpm": 935, "kw": 5}, {"name": "Main hoist", "ratio": 48.57, "cd": 650, "rpm": 974, "kw": 33}, {"name": "Aux / 2nd hoist", "ratio": 31.5, "cd": 500, "rpm": 975, "kw": 28}]}, {"crane": "Crane 5", "config": "Main + Aux (aux idle)", "rating": "15/10 Ton", "aux_status": "Not in service", "ctype": "QD", "code": "411010E05201800084", "mech": [{"name": "Long travel", "ratio": 23.34, "cd": 500, "rpm": 970, "kw": 7.5}, {"name": "Cross travel", "ratio": 22.4, "cd": 400, "rpm": 935, "kw": 5}, {"name": "Main hoist", "ratio": 48.57, "cd": 650, "rpm": 974, "kw": 33}, {"name": "Aux / 2nd hoist", "ratio": 31.5, "cd": 500, "rpm": 975, "kw": 28}]}, {"crane": "Crane 6", "config": "Main + Aux", "rating": "50/20 Ton", "aux_status": "In service", "ctype": "QDY", "code": "411010E05201800083", "mech": [{"name": "Long travel", "ratio": 31.5, "cd": 500, "rpm": 973, "kw": 17}, {"name": "Cross travel", "ratio": 37.9, "cd": 600, "rpm": 952, "kw": 9}, {"name": "Main hoist", "ratio": 48.57, "cd": 1000, "rpm": 589, "kw": 63}, {"name": "Aux / 2nd hoist", "ratio": 40.17, "cd": 650, "rpm": 725, "kw": 26}]}, {"crane": "Crane 7", "config": "Main + Aux", "rating": "50/20 Ton", "aux_status": "In service", "ctype": "QDY", "code": "411010E05201800083", "mech": [{"name": "Long travel", "ratio": 31.5, "cd": 500, "rpm": 973, "kw": 17}, {"name": "Cross travel", "ratio": 37.9, "cd": 600, "rpm": 952, "kw": 9}, {"name": "Main hoist", "ratio": 48.57, "cd": 1000, "rpm": 589, "kw": 63}, {"name": "Aux / 2nd hoist", "ratio": 40.17, "cd": 650, "rpm": 725, "kw": 26}]}, {"crane": "Crane N2", "config": "Main + Aux", "rating": "70/30 Ton", "aux_status": "In service", "ctype": "QDY", "code": "427 041537202510000", "mech": [{"name": "Long travel", "ratio": 34.31, "cd": 600, "rpm": 969, "kw": 19}, {"name": "Cross travel", "ratio": 54.75, "cd": 750, "rpm": 975, "kw": 13}, {"name": "Main hoist", "ratio": 63, "cd": 710, "rpm": 590, "kw": 75}, {"name": "Aux / 2nd hoist", "ratio": 48.57, "cd": 850, "rpm": 730, "kw": 48}]}], "crane_names": ["Crane 1", "Crane 2", "Crane 3", "Crane 4", "Crane 5", "Crane 6", "Crane 7", "Crane N1", "Crane N2"], "seed": {"change": [{"date": "2024-02-25", "crane": "Crane 1", "hoist": "Main 10 Ton", "length": 450, "remark": "Reduction in diameter"}, {"date": "2024-06-21", "crane": "Crane 2", "hoist": "Main 15 Ton", "length": 450, "remark": "Threads come out"}, {"date": "2025-04-11", "crane": "Crane 2", "hoist": "Main 15 Ton", "length": 450, "remark": "Due to accident of limit (day/month to confirm)"}, {"date": "2026-04-29", "crane": "Crane 2", "hoist": "Main 15 Ton", "length": 430, "remark": "Damaged"}, {"date": "2026-10-19", "crane": "Crane 2", "hoist": "Main 15 Ton", "length": 430, "remark": "Due to reduction in diameter"}, {"date": "2024-04-06", "crane": "Crane 3", "hoist": "Cabin side carriage 20 Ton", "length": 450, "remark": "Threads come out (day/month to confirm)"}, {"date": "2024-07-12", "crane": "Crane 3", "hoist": "Busbar side carriage 20 Ton", "length": 450, "remark": "Reduction in diameter"}, {"date": "2024-09-26", "crane": "Crane 3", "hoist": "Busbar side carriage 20 Ton", "length": 450, "remark": "Reduction in diameter"}, {"date": "2025-01-23", "crane": "Crane 3", "hoist": "Busbar side carriage 20 Ton", "length": 450, "remark": "Reduction in diameter"}, {"date": "2025-05-28", "crane": "Crane 3", "hoist": "Busbar side carriage 20 Ton", "length": 600, "remark": "Reduction in diameter"}, {"date": "2025-06-10", "crane": "Crane 3", "hoist": "Busbar side carriage 20 Ton", "length": 600, "remark": "Threads come out (day/month to confirm)"}, {"date": "2026-08-02", "crane": "Crane 3", "hoist": "Busbar side carriage 20 Ton", "length": 430, "remark": "Damaged (day/month to confirm)"}, {"date": "2026-05-27", "crane": "Crane 3", "hoist": "Busbar side carriage 20 Ton", "length": 430, "remark": "crane driver Imteiz failure"}, {"date": "2026-10-13", "crane": "Crane 3", "hoist": "Busbar side carriage 20 Ton", "length": 600, "remark": "Threads come out"}, {"date": "2024-04-23", "crane": "Crane 4", "hoist": "Main 15 Ton", "length": 450, "remark": "Reduction in diameter"}, {"date": "2024-11-12", "crane": "Crane 4", "hoist": "Main 15 Ton", "length": 450, "remark": "Threads come out (day/month to confirm)"}, {"date": "2025-02-07", "crane": "Crane 4", "hoist": "Main 15 Ton", "length": 450, "remark": "Reduction in diameter (day/month to confirm)"}, {"date": "2026-05-03", "crane": "Crane 4", "hoist": "Main 15 Ton", "length": 430, "remark": "Threads come out (day/month to confirm)"}, {"date": "2024-05-08", "crane": "Crane 4", "hoist": "Small auxiliary 10 Ton", "length": 450, "remark": "Reduction in diameter (day/month to confirm)"}, {"date": "2025-03-18", "crane": "Crane 4", "hoist": "Small auxiliary 10 Ton", "length": 450, "remark": "Reduction in diameter"}, {"date": "2024-01-25", "crane": "Crane 5", "hoist": "Main 15 Ton", "length": 600, "remark": "Reduction in diameter"}, {"date": "2026-06-01", "crane": "Crane 5", "hoist": "Main 15 Ton", "length": 500, "remark": "Reduction in diameter (day/month to confirm)"}, {"date": "2024-10-15", "crane": "Crane 5", "hoist": "Auxiliary 10 Ton", "length": 600, "remark": "Reduction in diameter"}, {"date": "2024-08-25", "crane": "Crane 6", "hoist": "Main 50 Ton", "length": 760, "remark": "Reduction in diameter"}, {"date": "2024-10-28", "crane": "Crane 6", "hoist": "Main 50 Ton", "length": 760, "remark": "For safety as jerk load"}, {"date": "2025-05-28", "crane": "Crane 6", "hoist": "Main 50 Ton", "length": 760, "remark": "Reduction in diameter"}, {"date": "2026-03-27", "crane": "Crane 6", "hoist": "Main 50 Ton", "length": 760, "remark": "Threads come out"}, {"date": "2024-10-14", "crane": "Crane 6", "hoist": "Auxiliary 20 Ton", "length": 600, "remark": "Reduction in diameter"}, {"date": "", "crane": "Crane 6", "hoist": "Auxiliary 20 Ton", "length": 600, "remark": "Reduction in diameter (16.3 mm) 10% reduced"}, {"date": "2024-12-01", "crane": "Crane 7", "hoist": "Main 50 Ton", "length": 760, "remark": "Replace on Order of Waseem sb (day/month to confirm)"}, {"date": "2024-02-06", "crane": "Crane 7", "hoist": "Main 50 Ton", "length": 450, "remark": "Reduction in diameter (day/month to confirm)"}, {"date": "2025-02-19", "crane": "Crane 7", "hoist": "Main 50 Ton", "length": 600, "remark": "Reduction in diameter"}, {"date": "2026-04-14", "crane": "Crane 7", "hoist": "Main 50 Ton", "length": 760, "remark": "Threads come out"}, {"date": "2024-01-29", "crane": "Crane 7", "hoist": "Auxiliary 20 Ton", "length": 600, "remark": "Reduction in diameter"}, {"date": "2024-12-10", "crane": "Crane 7", "hoist": "Auxiliary 20 Ton", "length": 600, "remark": "Reduction in diameter (day/month to confirm)"}, {"date": "2025-06-30", "crane": "Crane 7", "hoist": "Auxiliary 20 Ton", "length": 600, "remark": "Reduction in diameter"}, {"date": "2025-01-10", "crane": "Crane 7", "hoist": "Auxiliary 20 Ton", "length": 600, "remark": "Reduction in diameter (day/month to confirm)"}, {"date": "2026-07-22", "crane": "Crane 7", "hoist": "Auxiliary 20 Ton", "length": 600, "remark": "Threads come out"}, {"date": "2026-10-17", "crane": "Crane N1", "hoist": "Auxiliary 15 Ton", "length": 430, "remark": "Damaged rope due to production team"}, {"date": "2026-11-01", "crane": "Crane 4", "hoist": "Main 15 Ton", "length": 430, "remark": "Reduction in diameter"}, {"date": "2026-11-01", "crane": "Crane 3", "hoist": "Cabin side carriage 20 Ton", "length": 600, "remark": "Reduction in diameter"}], "inspect": [{"date": "2026-10-31", "crane": "Crane 1", "hoist": "Main 10 T", "std": 16, "length": 430, "current": 15.33, "installed": "25-Feb-2024", "replaced": "", "status": "GOOD / OK", "remark": ""}, {"date": "2026-10-31", "crane": "Crane 2", "hoist": "Main 15 T", "std": 18, "length": 430, "current": 17.32, "installed": "19-Oct-2026", "replaced": "", "status": "BETTER / OK", "remark": ""}, {"date": "2026-10-31", "crane": "Crane 2", "hoist": "Aux 10 T", "std": 16, "length": 430, "current": 15.2, "installed": "04-Nov-2024", "replaced": "", "status": "GOOD / OK", "remark": ""}, {"date": "2026-10-31", "crane": "Crane 3", "hoist": "Busbar side 20 T", "std": 18, "length": 430, "current": 17.68, "installed": "13-Oct-2026", "replaced": "", "status": "BEST / OK", "remark": ""}, {"date": "2026-10-31", "crane": "Crane 3", "hoist": "Cabin side 20 T", "std": 18, "length": 430, "current": 15.89, "installed": "27-May-2026", "replaced": "2026-11-01", "status": "NOT OK / URGENTLY CHANGE IT", "remark": "Replaced 01-Nov-2026 – measure the new rope"}, {"date": "2026-10-31", "crane": "Crane 4", "hoist": "Main 15 T", "std": 18, "length": 430, "current": 16.1, "installed": "05-Mar-2026", "replaced": "2026-11-01", "status": "NOT OK / URGENTLY CHANGE IT", "remark": "Replaced 01-Nov-2026 – measure the new rope"}, {"date": "2026-10-31", "crane": "Crane 5", "hoist": "Main 15 T", "std": 18, "length": 500, "current": 16.68, "installed": "06-Jan-2026", "replaced": "", "status": "FAIR / OK", "remark": ""}, {"date": "2026-11-08", "crane": "Crane 6", "hoist": "Main 50 T", "std": 24, "length": 760, "current": 22.7, "installed": "27-Mar-2026", "replaced": "", "status": "FAIR / OK", "remark": ""}, {"date": "2026-11-08", "crane": "Crane 6", "hoist": "Aux 20 T", "std": 18, "length": 600, "current": 17.73, "installed": "14-Oct-2024", "replaced": "", "status": "BETTER / OK", "remark": ""}, {"date": "2026-11-08", "crane": "Crane 7", "hoist": "Main 50 T", "std": 24, "length": 760, "current": 22.5, "installed": "14-Apr-2026", "replaced": "", "status": "LAST STAGE FOR USE", "remark": ""}, {"date": "2026-11-08", "crane": "Crane 7", "hoist": "Aux 20 T", "std": 18, "length": 600, "current": 17.49, "installed": "22-Jul-2026", "replaced": "", "status": "GOOD / OK", "remark": ""}, {"date": "2026-10-31", "crane": "Crane N2", "hoist": "Main 70 T (rope 1)", "std": 32, "length": 450, "current": 31.4, "installed": "Not changed yet", "replaced": "", "status": "BETTER / OK", "remark": ""}, {"date": "2026-10-31", "crane": "Crane N2", "hoist": "Main 70 T (rope 2)", "std": 32, "length": 450, "current": 31.61, "installed": "Not changed yet", "replaced": "", "status": "BEST / OK", "remark": ""}, {"date": "2026-10-31", "crane": "Crane N2", "hoist": "Aux 30 T", "std": 22, "length": 620, "current": 21.43, "installed": "Not changed yet", "replaced": "", "status": "BETTER / OK", "remark": ""}, {"date": "2026-10-31", "crane": "Crane N1", "hoist": "Cabin side 15 T", "std": 18, "length": 430, "current": 17.55, "installed": "Not changed yet", "replaced": "", "status": "BETTER / OK", "remark": ""}, {"date": "2026-10-31", "crane": "Crane N1", "hoist": "Busbar side 15 T", "std": 18, "length": 430, "current": 17.65, "installed": "17-Oct-2026", "replaced": "", "status": "BEST / OK", "remark": ""}, {"date": "2026-10-31", "crane": "Crane 6", "hoist": "Main 50 T", "std": 24, "length": 760, "current": 22.89, "installed": "27-Mar-2026", "replaced": "", "status": "FAIR / OK", "remark": ""}, {"date": "2026-10-31", "crane": "Crane 6", "hoist": "Aux 20 T", "std": 18, "length": 600, "current": 17.8, "installed": "14-Oct-2024", "replaced": "", "status": "BEST / OK", "remark": ""}, {"date": "2026-10-31", "crane": "Crane 7", "hoist": "Main 50 T", "std": 24, "length": 760, "current": 22.73, "installed": "14-Apr-2026", "replaced": "", "status": "FAIR / OK", "remark": ""}, {"date": "2026-10-31", "crane": "Crane 7", "hoist": "Aux 20 T", "std": 18, "length": 600, "current": 17.33, "installed": "22-Jul-2026", "replaced": "", "status": "GOOD / OK", "remark": ""}], "maint": [{"month": "2026-11", "crane": "Crane 3", "type": "Planned", "work": "Wire rope planned changing", "parts": "Wire rope 18 mm", "downtime": 60, "by": "", "remark": "From Nov-2026 downtime report"}, {"month": "2026-11", "crane": "Crane 4", "type": "Planned", "work": "Wire rope planned changing", "parts": "Wire rope 18 mm", "downtime": 45, "by": "", "remark": "From Nov-2026 downtime report"}], "spares": [{"cranes": "No.6, No.7", "cap": "50/20 TON", "item": "Up/Down (drum + flange)", "need": 6, "store": 2, "shop": 2, "remark": "Workshop: 2 sets (one has hub, the other doesn't); drum and flange not counted separately"}, {"cranes": "No.6, No.7", "cap": "50/20 TON", "item": "Cross travel motor side", "need": 2, "store": 0, "shop": null, "remark": ""}, {"cranes": "No.6, No.7", "cap": "50/20 TON", "item": "Cross travel wheel side", "need": 2, "store": 3, "shop": 4, "remark": "Workshop: 3 full sets without hubs + 1 half female set"}, {"cranes": "No.6, No.7", "cap": "50/20 TON", "item": "LT wheel coupling", "need": 4, "store": 2, "shop": 1, "remark": "Workshop: 1 half female set with 2 hubs"}, {"cranes": "No.6, No.7", "cap": "50/20 TON", "item": "LT shaft coupling", "need": 4, "store": 2, "shop": 2, "remark": "Workshop: 2 sets without hubs"}, {"cranes": "No.6, No.7", "cap": "50/20 TON", "item": "LT brake drum with flanges", "need": 4, "store": 1, "shop": 2, "remark": "Workshop: 2 sets male flanges (for shaft and drum); no drums"}, {"cranes": "No.2, 3, 4, 5", "cap": "15/10 and 20 TON", "item": "Up/Down (drum + flange)", "need": 10, "store": 4, "shop": 6, "remark": "Workshop: 2 drums with flange + 4 without flange (no hubs)"}, {"cranes": "No.2, 3, 4, 5", "cap": "15/10 and 20 TON", "item": "Cross travel motor side", "need": 5, "store": 0, "shop": null, "remark": ""}, {"cranes": "No.2, 3, 4, 5", "cap": "15/10 and 20 TON", "item": "Cross travel wheel side", "need": 10, "store": 2, "shop": null, "remark": ""}, {"cranes": "No.2, 3, 4, 5", "cap": "15/10 and 20 TON", "item": "LT wheel coupling", "need": 8, "store": 0, "shop": null, "remark": ""}, {"cranes": "No.2, 3, 4, 5", "cap": "15/10 and 20 TON", "item": "LT shaft coupling", "need": 8, "store": 9, "shop": 7, "remark": "Workshop: 2 complete sets + 5 half sets (3 hubs)"}, {"cranes": "No.2, 3, 4, 5", "cap": "15/10 and 20 TON", "item": "LT brake drum with flanges", "need": 8, "store": null, "shop": 4, "remark": ""}, {"cranes": "No.1", "cap": "10 TON", "item": "Up/Down (drum + flange)", "need": 4, "store": null, "shop": 2, "remark": "Workshop: 2 flanges"}, {"cranes": "No.1", "cap": "10 TON", "item": "Cross travel motor side", "need": 1, "store": 1, "shop": null, "remark": ""}, {"cranes": "No.1", "cap": "10 TON", "item": "Cross travel wheel side", "need": 2, "store": null, "shop": null, "remark": ""}, {"cranes": "No.1", "cap": "10 TON", "item": "LT wheel coupling", "need": 2, "store": null, "shop": null, "remark": ""}, {"cranes": "No.1", "cap": "10 TON", "item": "LT shaft coupling", "need": 2, "store": null, "shop": null, "remark": ""}, {"cranes": "No.1", "cap": "10 TON", "item": "LT brake drum with flanges", "need": 2, "store": null, "shop": null, "remark": ""}], "ropeStock": [{"dia": 18, "length": 600, "qty": 1, "desc": "New"}, {"dia": 18, "length": 500, "qty": 2, "desc": "One new and one removed from crane no. 6"}, {"dia": 18, "length": 430, "qty": 0, "desc": "Zero"}, {"dia": 22, "length": 620, "qty": 1, "desc": "New"}, {"dia": 24, "length": 760, "qty": 4, "desc": "New"}, {"dia": 32, "length": 450, "qty": 2, "desc": "New"}, {"dia": 18, "length": "Unknown", "qty": 1, "desc": "Unknown length, seems like less than 300 ft"}], "ropeDemand": [{"dia": 18, "length": 430, "need": 5}, {"dia": 18, "length": 600, "need": 4}, {"dia": 18, "length": 500, "need": 1}], "ropeUsed": [], "misc": []}, "dims": {"Couplings": [["Crane 1", "Main Hoist – 10 TON", 215, null, null, 185], ["Crane 1", "Auxiliary Hoist – N/A", "N/A", "N/A", "N/A", "N/A"], ["Crane 1", "Long Travel Shaft Coupling", null, null, null, null], ["Crane 1", "Long Travel Wheel Coupling", null, null, null, null], ["Crane 1", "Cross Travel on Motor", null, null, null, null], ["Crane 1", "Cross Travel Wheel Side", null, null, null, null], ["Cranes 2,3,4,5", "Main Hoist – Crane 2,4,5 (15 TON)", 220, null, null, 185], ["Cranes 2,3,4,5", "Main Hoist – Crane 3 (20 TON, Busbar side hoist)", 220, null, null, 185], ["Cranes 2,3,4,5", "Auxiliary Hoist – Crane 2 (10 TON)", 215, null, null, 185], ["Cranes 2,3,4,5", "Auxiliary Hoist – Crane 3 (20 TON, Cabin side hoist)", 220, null, null, 185], ["Cranes 2,3,4,5", "Auxiliary Hoist – Crane 4,5", "N/A", "N/A", "N/A", "N/A"], ["Cranes 2,3,4,5", "Long Travel Shaft Coupling", 185, null, null, 155], ["Cranes 2,3,4,5", "Long Travel Wheel Coupling", 300, null, null, 275], ["Cranes 2,3,4,5", "Cross Travel on Motor", 180, null, null, 155], ["Cranes 2,3,4,5", "Cross Travel Wheel Side", 250, null, null, 215], ["Cranes 6,7", "Main Hoist – 50 TON", 280, null, null, 245], ["Cranes 6,7", "Auxiliary Hoist – 20 TON", 280, null, null, 245], ["Cranes 6,7", "Long Travel Shaft Coupling", 220, null, null, 185], ["Cranes 6,7", "Long Travel Wheel Coupling", 360, null, null, 300], ["Cranes 6,7", "Cross Travel on Motor", 185, null, null, 155], ["Cranes 6,7", "Cross Travel Wheel Side", 290, null, null, 245], ["Crane N1", "Main Hoist – 15 TON (Busbar side)", null, null, null, null], ["Crane N1", "Auxiliary Hoist – 15 TON (Busbar side)", null, null, null, null], ["Crane N1", "Long Travel Shaft Coupling", null, null, null, null], ["Crane N1", "Long Travel Wheel Coupling", null, null, null, null], ["Crane N1", "Cross Travel on Motor", null, null, null, null], ["Crane N1", "Cross Travel Wheel Side", null, null, null, null], ["Crane N2", "Main Hoist – 70 TON", null, null, null, null], ["Crane N2", "Auxiliary Hoist – 30 TON", null, null, null, null], ["Crane N2", "Long Travel Shaft Coupling", null, null, null, null], ["Crane N2", "Long Travel Wheel Coupling", null, null, null, null], ["Crane N2", "Cross Travel on Motor", null, null, null, null], ["Crane N2", "Cross Travel Wheel Side", null, null, null, null]], "Brake Drums": [["Crane 1", "Main Hoist – 10 TON", 300, null, null, null], ["Crane 1", "Auxiliary Hoist – N/A", "N/A", "N/A", "N/A", "N/A"], ["Crane 1", "Long Travel", null, null, null, null], ["Crane 1", "Cross Travel", null, null, null, null], ["Cranes 2,3,4,5", "Main Hoist – Crane 2,4,5 (15 TON)", 300, null, null, 185], ["Cranes 2,3,4,5", "Main Hoist – Crane 3 (20 TON, Busbar side hoist)", 300, null, null, 185], ["Cranes 2,3,4,5", "Auxiliary Hoist – Crane 2 (10 TON)", 300, null, null, 185], ["Cranes 2,3,4,5", "Auxiliary Hoist – Crane 3 (20 TON, Cabin side hoist)", 300, null, null, 185], ["Cranes 2,3,4,5", "Auxiliary Hoist – Crane 4,5", "N/A", "N/A", "N/A", "N/A"], ["Cranes 2,3,4,5", "Long Travel", 300, null, null, 185], ["Cranes 2,3,4,5", "Cross Travel", 200, null, null, 155], ["Cranes 6,7", "Main Hoist – 50 TON", 400, null, null, 245], ["Cranes 6,7", "Auxiliary Hoist – 20 TON", 400, null, null, 245], ["Cranes 6,7", "Long Travel", 300, null, null, 185], ["Cranes 6,7", "Cross Travel", 200, null, null, 155], ["Crane N1", "Main Hoist – 15 TON (Busbar side)", null, null, null, null], ["Crane N1", "Auxiliary Hoist – 15 TON (Busbar side)", null, null, null, null], ["Crane N1", "Long Travel", null, null, null, null], ["Crane N1", "Cross Travel", null, null, null, null], ["Crane N2", "Main Hoist – 70 TON", null, null, null, null], ["Crane N2", "Auxiliary Hoist – 30 TON", null, null, null, null], ["Crane N2", "Long Travel", null, null, null, null], ["Crane N2", "Cross Travel", null, null, null, null]], "Gear Boxes": [["Crane 1", "Main Hoist – 10 TON", null, null, null, null], ["Crane 1", "Auxiliary Hoist – N/A", "N/A", "N/A", null, null], ["Crane 1", "Long Travel", null, null, null, null], ["Crane 1", "Cross Travel Gear Box", null, null, null, null], ["Cranes 2,3,4,5", "Main Hoist – Crane 2,4,5 (15 TON)", null, null, null, null], ["Cranes 2,3,4,5", "Main Hoist – Crane 3 (20 TON, Busbar side hoist)", null, null, null, null], ["Cranes 2,3,4,5", "Auxiliary Hoist – Crane 2 (10 TON)", null, null, null, null], ["Cranes 2,3,4,5", "Auxiliary Hoist – Crane 3 (20 TON, Cabin side hoist)", null, null, null, null], ["Cranes 2,3,4,5", "Auxiliary Hoist – Crane 4,5", "N/A", "N/A", null, null], ["Cranes 2,3,4,5", "Long Travel", null, null, null, null], ["Cranes 2,3,4,5", "Cross Travel Gear Box", null, null, null, null], ["Cranes 6,7", "Main Hoist – 50 TON", null, null, null, null], ["Cranes 6,7", "Auxiliary Hoist – 20 TON", null, null, null, null], ["Cranes 6,7", "Long Travel", null, null, null, null], ["Cranes 6,7", "Cross Travel Gear Box", null, null, null, null], ["Crane N1", "Main Hoist – 15 TON (Busbar side)", null, null, null, null], ["Crane N1", "Auxiliary Hoist – 15 TON (Busbar side)", null, null, null, null], ["Crane N1", "Long Travel", null, null, null, null], ["Crane N1", "Cross Travel Gear Box", null, null, null, null], ["Crane N2", "Main Hoist – 70 TON", null, null, null, null], ["Crane N2", "Auxiliary Hoist – 30 TON", null, null, null, null], ["Crane N2", "Long Travel", null, null, null, null], ["Crane N2", "Cross Travel Gear Box", null, null, null, null]], "Wheels": [["Crane 1", "LT wheels dia", null, null, null, null], ["Crane 1", "Cross travel wheels dia", null, null, null, null], ["Cranes 2,3,4,5", "LT wheels dia", null, null, null, null], ["Cranes 2,3,4,5", "Cross travel wheels dia", null, null, null, null], ["Cranes 6,7", "LT wheels dia", null, null, null, null], ["Cranes 6,7", "Cross travel wheels dia", null, null, null, null], ["Crane N1", "LT wheels dia", null, null, null, null], ["Crane N1", "Cross travel wheels dia", null, null, null, null], ["Crane N2", "LT wheels dia", null, null, null, null], ["Crane N2", "Cross travel wheels dia", null, null, null, null]], "Hoist Wire Rope": [["Crane 1", "Main Hoist – 10 TON", 16, 360, null, null], ["Crane 1", "Auxiliary Hoist", "N/A", "N/A", null, null], ["Cranes 2,3,4,5", "Main Hoist – Crane 2,4,5 (15 TON)", 18, 430, null, null], ["Cranes 2,3,4,5", "Main Hoist – Crane 3 (20 TON, Busbar side)", 18, 600, null, null], ["Cranes 2,3,4,5", "Auxiliary Hoist – Crane 2 (10 TON)", 16, 360, null, null], ["Cranes 2,3,4,5", "Auxiliary Hoist – Crane 3 (20 TON, Cabin side)", 18, 600, null, null], ["Cranes 2,3,4,5", "Auxiliary Hoist – Crane 4,5", "N/A", "N/A", null, null], ["Cranes 6,7", "Main Hoist – 50 TON", 24, 760, null, null], ["Cranes 6,7", "Auxiliary Hoist – 20 TON", 18, 600, null, null], ["Crane N1", "Main Hoist – 15 TON", 18, 430, null, null], ["Crane N1", "Auxiliary Hoist – 15 TON (Busbar side)", 18, 430, null, null], ["Crane N2", "Main Hoist – 70 TON", 32, 900, "2 ropes of 450 ft each", null], ["Crane N2", "Auxiliary Hoist – 30 TON", 22, 620, null, null]]}, "asof": "08-11-2026"};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const fmt=d=>{if(!d)return '–';const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(d);return m?`${m[3]}-${MON[+m[2]-1]}-${m[1]}`:d};
+const fmtM=m=>{const x=/^(\d{4})-(\d{2})$/.exec(m||'');return x?`${MON[+x[2]-1]} ${x[1]}`:(m||'–')};
+const today=()=>new Date().toISOString().slice(0,10);
+const uid=()=>Math.random().toString(36).slice(2,9);
+const CR=D.crane_names, LADLE=['Crane 6','Crane 7','Crane N2'];
+const KEY='eot_crane_app_v1';let mem=null;
+function seed(){const s=JSON.parse(JSON.stringify(D.seed));for(const k in s)s[k].forEach(r=>r.id=uid());s.dims=JSON.parse(JSON.stringify(D.dims));return s}
+let S=(()=>{try{const t=localStorage.getItem(KEY);if(t)return JSON.parse(t)}catch(e){}return seed()})();
+for(const k in D.seed)if(!S[k])S[k]=[];
+if(!S.dims)S.dims=JSON.parse(JSON.stringify(D.dims));
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){mem=S;toast('Browser storage is blocked – changes last only while this page is open')}if(GH.repo&&GH.token){setDirty(true);schedPush()}}
+// ---------- live data through GitHub (data.json in the repo): one editor (token), everyone else reads
+const GHK='eot_gh_v1';
+const GH=(()=>{let c={};try{c=JSON.parse(localStorage.getItem(GHK)||'{}')}catch(e){}
+ const m=/^([^.]+)\.github\.io$/.exec(location.hostname);
+ if(!c.repo&&m){const seg=location.pathname.split('/')[1];c.repo=m[1]+'/'+(seg&&!seg.includes('.')?seg:m[1]+'.github.io')}
+ c.branch=c.branch||'main';c.path='data.json';return c})();
+const canEdit=()=>!GH.repo||!!GH.token;
+let SYNC='',pushT=null,pushing=false,pushAgain=false;
+const isDirty=()=>{try{return !!localStorage.getItem('eot_dirty')}catch(e){return false}};
+const setDirty=v=>{try{v?localStorage.setItem('eot_dirty','1'):localStorage.removeItem('eot_dirty')}catch(e){}};
+const ghHead=()=>({Authorization:'Bearer '+GH.token,Accept:'application/vnd.github+json'});
+const ghUrl=()=>`https://api.github.com/repos/${GH.repo}/contents/${GH.path}`;
+function schedPush(){clearTimeout(pushT);pushT=setTimeout(push,1500)}
+async function push(){
+ if(!GH.repo||!GH.token)return;if(pushing){pushAgain=true;return}pushing=true;
+ try{const r0=await fetch(`${ghUrl()}?ref=${GH.branch}`,{headers:ghHead(),cache:'no-store'});
+  if(!r0.ok&&r0.status!==404)throw new Error(r0.status===401?'token rejected':'read error '+r0.status);
+  const sha=r0.ok?(await r0.json()).sha:undefined;
+  const body={message:'Update records '+new Date().toISOString().slice(0,16),content:btoa(unescape(encodeURIComponent(JSON.stringify(S)))),branch:GH.branch};if(sha)body.sha=sha;
+  const r=await fetch(ghUrl(),{method:'PUT',headers:{...ghHead(),'Content-Type':'application/json'},body:JSON.stringify(body)});
+  if(!r.ok)throw new Error(r.status===401||r.status===403?'token has no write permission':'write error '+r.status);
+  setDirty(false);SYNC='Last uploaded '+new Date().toLocaleTimeString();toast('Saved online')}
+ catch(e){SYNC='Not uploaded: '+e.message;toast('Saved on this phone – online upload failed, will retry');clearTimeout(pushT);pushT=setTimeout(push,30000)}
+ finally{pushing=false;if(pushAgain){pushAgain=false;schedPush()}}}
+async function pull(){
+ if(!GH.repo)return;
+ try{if(GH.token&&(isDirty()||pushing))return push();
+  let r=await fetch(`${ghUrl()}?ref=${GH.branch}`,{headers:{...(GH.token?{Authorization:'Bearer '+GH.token}:{}),Accept:'application/vnd.github.raw+json'},cache:'no-store'});
+  if(r.status===404&&GH.token){return push()}
+  if(!r.ok&&!GH.token)r=await fetch(GH.path+'?t='+Date.now(),{cache:'no-store'});
+  if(!r.ok)return;
+  const o=JSON.parse(await r.text());if(!o.change||!o.inspect)return;
+  for(const k in D.seed)if(!o[k])o[k]=[];if(!o.dims)o.dims=JSON.parse(JSON.stringify(D.dims));
+  if(JSON.stringify(o)===JSON.stringify(S)){SYNC='Up to date '+new Date().toLocaleTimeString();return}
+  S=o;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}SYNC='Updated '+new Date().toLocaleTimeString();
+  if(!document.querySelector('.sheet-bg'))render()}catch(e){}}
+const viewOnly=()=>{if(canEdit())return false;toast('View only – editing is for the editor');return true};
+function toast(t){const e=document.createElement('div');e.className='toast';e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),2200)}
+
+// ---------- calculations
+const limitFor=c=>LADLE.includes(c)?.07:.10;
+function calc(r){const std=+r.std,cur=+r.current;if(!std||!cur)return{red:null,lim:limitFor(r.crane),disc:null,check:'–'};
+ const red=1-cur/std,lim=limitFor(r.crane),disc=std*(1-lim);
+ const check=r.replaced?'REPLACED – RE-MEASURE':red>=lim?'OVER LIMIT':red>=.8*lim?'WATCH':'OK';return{red,lim,disc,check}}
+const tagCls=c=>({'OK':'ok','WATCH':'watch','OVER LIMIT':'over','REPLACED – RE-MEASURE':'re','SHORT':'over','ENOUGH':'ok'}[c]||'gray');
+const pc=(v,d=1)=>v==null?'–':(v*100).toFixed(d)+'%';
+function latestRopes(){const m={};S.inspect.forEach(r=>{const k=r.crane+'|'+r.hoist;if(!m[k]||(r.date||'')>=(m[k].date||''))m[k]=r});return Object.values(m)}
+const spareShort=r=>Math.max(0,(+r.need||0)-((+r.store||0)+(+r.shop||0)));
+const demandRow=r=>{const have=S.ropeStock.filter(s=>+s.dia==+r.dia&&+s.length==+r.length).reduce((a,s)=>a+(+s.qty||0),0);return{have,short:Math.max(0,(+r.need||0)-have)}};
+
+// ---------- collections (view + edit)
+const CATS=['Gearbox','Shaft','Brake thruster','Brake leather'];
+const hoistList=()=>[...new Set([...S.inspect.map(r=>r.hoist),...S.change.map(r=>r.hoist)])].filter(Boolean);
+const C={
+ change:{title:'Rope Change Record',icon:'🔄',add:'New rope change',sort:'date',desc:true,
+  fields:[{k:'date',l:'Date of change',t:'date',req:1},{k:'crane',l:'Crane',t:'select',o:CR,req:1},{k:'hoist',l:'Hoist',t:'text',list:1,req:1},{k:'length',l:'Length of wire (ft)',t:'number',req:1},{k:'remark',l:'Remarks / reason',t:'textarea'}],
+  filter:'crane',chips:()=>CR,
+  row:r=>({t:`${r.crane} · ${r.hoist}`,s:`${fmt(r.date)} · ${r.length||'–'} ft`,n:r.remark}),
+  def:()=>({date:today(),crane:'Crane 1'}),xl:['change']},
+ inspect:{title:'Rope Inspection Record',icon:'🔍',add:'New inspection',sort:'date',desc:true,
+  fields:[{k:'date',l:'Inspection date',t:'date',req:1},{k:'crane',l:'Crane',t:'select',o:CR,req:1},{k:'hoist',l:'Hoist',t:'text',list:1,req:1},{k:'std',l:'Standard size (mm)',t:'number',req:1},{k:'length',l:'Length (ft)',t:'number'},{k:'current',l:'Current diameter (mm)',t:'number',req:1},{k:'installed',l:"Last installed (date or 'Not changed yet')",t:'text'},{k:'replaced',l:'Rope replaced after this reading? (date)',t:'date'},{k:'status',l:'Status',t:'select',o:['','BEST / OK','BETTER / OK','GOOD / OK','FAIR / OK','LAST STAGE FOR USE','NOT OK / URGENTLY CHANGE IT']},{k:'remark',l:'Remarks',t:'textarea'}],
+  fieldsNew:[{k:'date',l:'Inspection date',t:'date',req:1},{k:'crane',l:'Crane',t:'select',o:CR,req:1},{k:'hoist',l:'Hoist',t:'select',o:[],req:1},{k:'current',l:'Current diameter (mm)',t:'number',req:1},{k:'installed',l:"Last installed (filled from the rope change record – edit if needed)",t:'text'},{k:'status',l:'Status (optional)',t:'select',o:['','BEST / OK','BETTER / OK','GOOD / OK','FAIR / OK','LAST STAGE FOR USE','NOT OK / URGENTLY CHANGE IT']},{k:'remark',l:'Remarks',t:'textarea'}],
+  filter:'crane',chips:()=>CR,calc:1,
+  row:r=>{const c=calc(r);return{t:`${r.crane} · ${r.hoist}`,s:`${fmt(r.date)} · ${r.current||'–'} mm of ${r.std} mm · ${pc(c.red)} reduced (limit ${pc(c.lim,0)})`,n:r.status||'',b:c.check}},
+  def:()=>({date:today(),crane:'Crane 6'}),xl:['inspect']},
+ maint:{title:'Monthly Maintenance',icon:'🛠️',add:'New maintenance entry',sort:'month',desc:true,
+  fields:[{k:'month',l:'Month',t:'month',req:1},{k:'crane',l:'Crane',t:'select',o:[...CR,'All cranes'],req:1},{k:'type',l:'Type',t:'select',o:['Planned','Breakdown','Inspection','Lubrication','Other']},{k:'work',l:'Work done',t:'textarea',req:1},{k:'parts',l:'Parts / material used',t:'text'},{k:'downtime',l:'Downtime (minutes)',t:'number'},{k:'by',l:'Done by',t:'text'},{k:'remark',l:'Remarks',t:'textarea'}],
+  filter:'crane',chips:()=>[...CR,'All cranes'],
+  row:r=>({t:`${r.crane} · ${r.work}`,s:`${fmtM(r.month)} · ${r.type||''}${r.downtime?' · '+r.downtime+' min down':''}`,n:[r.parts,r.by,r.remark].filter(Boolean).join(' · ')}),
+  def:()=>({month:today().slice(0,7),crane:'Crane 1',type:'Planned'}),xl:['maint'],
+  sum:rows=>`<div class="sum"><div><b>${rows.length}</b>entries</div><div><b>${rows.reduce((a,r)=>a+(+r.downtime||0),0)}</b>min downtime</div></div>`},
+ spares:{title:'Gear Couplings & Drums',icon:'⚙️',add:'New spares line',sort:'sr',
+  fields:[{k:'cranes',l:'Cranes',t:'select',o:['No.6, No.7','No.2, 3, 4, 5','No.1'],req:1},{k:'cap',l:'Capacity',t:'text'},{k:'item',l:'Item',t:'text',req:1},{k:'need',l:'Our need',t:'number',req:1},{k:'store',l:'In store',t:'number'},{k:'shop',l:'In workshop',t:'number'},{k:'remark',l:'Remarks',t:'textarea'}],
+  filter:'cranes',chips:()=>['No.6, No.7','No.2, 3, 4, 5','No.1'],extra:[{l:'Short only',f:r=>spareShort(r)>0}],
+  row:r=>({t:r.item,s:`${r.cranes} · ${r.cap||''} — Need ${r.need||0} · Store ${r.store??'–'} · Workshop ${r.shop??'–'}`,n:r.remark,b:spareShort(r)?'SHORT':'ENOUGH',b2:spareShort(r)?`short ${spareShort(r)}`:''}),
+  def:()=>({cranes:'No.6, No.7'}),xl:['gear'],
+  sum:rows=>`<div class="sum"><div><b>${rows.length}</b>lines</div><div><b>${rows.filter(r=>spareShort(r)>0).length}</b>short</div><div><b>${rows.reduce((a,r)=>a+spareShort(r),0)}</b>pcs missing</div></div>`},
+ ropeStock:{title:'Wire Rope in Stock',icon:'🧵',add:'New rope stock',sort:'dia',
+  fields:[{k:'dia',l:'Diameter (mm)',t:'number',req:1},{k:'length',l:"Length (ft) – number, or 'Unknown'",t:'text',req:1},{k:'qty',l:'Quantity (pcs)',t:'number',req:1},{k:'desc',l:'Description',t:'textarea'}],
+  row:r=>({t:`${r.dia} mm × ${r.length} ft`,s:`Quantity: ${r.qty}`,n:r.desc}),xl:['rope']},
+ ropeDemand:{title:'Wire Rope Demand',icon:'📝',add:'New demand',sort:'dia',
+  fields:[{k:'dia',l:'Diameter (mm)',t:'number',req:1},{k:'length',l:'Length (ft)',t:'number',req:1},{k:'need',l:'Pieces demanded',t:'number',req:1}],
+  row:r=>{const d=demandRow(r);return{t:`${r.dia} mm × ${r.length} ft`,s:`Demanded ${r.need} · In stock ${d.have}`,n:'',b:d.short?'SHORT':'ENOUGH',b2:d.short?`short ${d.short}`:''}},xl:['rope']},
+ ropeUsed:{title:'Wire Rope Consumed',icon:'📤',add:'New consumed rope',sort:'date',desc:true,
+  fields:[{k:'date',l:'Date',t:'date',req:1},{k:'dia',l:'Diameter (mm)',t:'number',req:1},{k:'length',l:'Length (ft)',t:'number',req:1},{k:'qty',l:'Quantity used',t:'number',req:1},{k:'usedfor',l:'Used for (crane / hoist)',t:'text'}],
+  row:r=>({t:`${r.dia} mm × ${r.length} ft`,s:`${fmt(r.date)} · Qty ${r.qty}`,n:r.usedfor}),xl:['rope']},
+ misc:{title:'Gearboxes, Shafts & Brake Leathers',icon:'🧰',add:'New stock item',sort:'item',
+  fields:[{k:'cat',l:'Category',t:'select',o:CATS,req:1},{k:'item',l:'Item',t:'text',req:1},{k:'crane',l:'For crane / location',t:'text'},{k:'spec',l:'Size / ratio / specification',t:'text'},{k:'store',l:'In store (qty)',t:'number'},{k:'shop',l:'In workshop (qty)',t:'number'},{k:'remark',l:'Remarks',t:'textarea'}],
+  filter:'cat',chips:()=>CATS,
+  row:r=>({t:`${r.item}`,s:`${r.cat} · ${r.crane||''} ${r.spec?'· '+r.spec:''}`,n:r.remark,b2:`Store ${r.store??0} · Shop ${r.shop??0}`}),
+  def:()=>({cat:'Gearbox'}),xl:['gear','brake']}
+};
+
+// ---------- app shell
+const ROUTES=[['home','🏠','Home'],['info','🏗️','Cranes'],['meas','📏','Measure'],['records','📋','Records'],['stocks','📦','Stocks']];
+let FILT={}, Q='';
+function shell(title,body,{back,fab,right}={}){
+ const tab=(location.hash.split('/')[1]||'home');
+ $('#app').innerHTML=`<div class="top">${back?`<button class="ib" onclick="go('${back}')" aria-label="Back">‹</button>`:''}<h1>${esc(title)}</h1>${right||''}<button class="ib" onclick="settings()" aria-label="Settings">⚙</button></div><div class="pad">${body}</div>${fab&&canEdit()?`<button class="fab" onclick="edit('${fab}')" aria-label="Add">＋</button>`:''}<nav class="nav">${ROUTES.map(r=>`<a href="#/${r[0]}" class="${tab===r[0]?'on':''}"><span>${r[1]}</span>${r[2]}</a>`).join('')}</nav>`;}
+function go(h){location.hash=h}
+
+// ---------- screens
+function home(){
+ const lr=latestRopes().map(r=>({r,c:calc(r).check})),over=lr.filter(x=>x.c==='OVER LIMIT'),watch=lr.filter(x=>x.c==='WATCH'),re=lr.filter(x=>x.c.startsWith('REPL'));
+ const rshort=S.ropeDemand.reduce((a,r)=>a+demandRow(r).short,0),sshort=S.spares.filter(s=>spareShort(s)>0).length;
+ const al=[...over.map(x=>['over',`${x.r.crane} ${x.r.hoist}: ${pc(calc(x.r).red)} reduced – past limit`,'records/inspect']),...watch.map(x=>['watch',`${x.r.crane} ${x.r.hoist}: ${pc(calc(x.r).red,2)} of ${pc(calc(x.r).lim,0)} limit`,'records/inspect']),...re.map(x=>['re',`${x.r.crane} ${x.r.hoist}: replaced – measure new rope`,'records/inspect'])];
+ shell('EOT Cranes',`<div class="hero"><b>Sheikhoo Steel</b><span>Melt Shop · Mechanical Maintenance</span><small>9 EOT cranes · data as of ${D.asof} · ${GH.repo?(GH.token?'editor – changes are published online':'view only – live data'):'your edits are saved on this device'}</small></div>
+ <div class="stats"><div class="stat"><i>${over.length+watch.length}</i><span>ropes over limit / watch</span></div><div class="stat"><i>${rshort}</i><span>rope pcs short</span></div><div class="stat"><i>${sshort}</i><span>spare lines short</span></div></div>
+ <div class="menu"><button class="mbtn red" onclick="go('#/info')"><span class="ic">🏗️</span><b>Crane Information</b><span>Specs, drives, ropes</span></button>
+ <button class="mbtn" onclick="go('#/meas')"><span class="ic">📏</span><b>Measurements</b><span>Couplings, drums, wheels</span></button>
+ <button class="mbtn" onclick="go('#/records')"><span class="ic">📋</span><b>Records</b><span>Rope change · inspection · monthly</span></button>
+ <button class="mbtn" onclick="go('#/stocks')"><span class="ic">📦</span><b>Stocks</b><span>Couplings · ropes · gearboxes</span></button></div>
+ <div class="sec">Needs attention</div>${al.length?al.map(a=>`<button class="li" onclick="go('#/${a[2]}')"><span class="tag ${a[0]}">${a[0]==='over'?'OVER':a[0]==='watch'?'WATCH':'RE-MEASURE'}</span><div class="m"><b style="font-weight:normal">${esc(a[1])}</b></div><span class="arr">›</span></button>`).join(''):'<div class="card">No rope needs attention.</div>'}
+ ${rshort?`<button class="li" onclick="go('#/stocks/rope')"><span class="tag over">SHORT</span><div class="m"><b style="font-weight:normal">${rshort} wire rope pieces short of demand</b></div><span class="arr">›</span></button>`:''}
+ ${sshort?`<button class="li" onclick="go('#/stocks/spares')"><span class="tag over">SHORT</span><div class="m"><b style="font-weight:normal">${sshort} coupling / drum lines short</b></div><span class="arr">›</span></button>`:''}`)}
+
+const grpOf=c=>/^Crane (2|3|4|5)$/.test(c)?'Cranes 2,3,4,5':/^Crane (6|7)$/.test(c)?'Cranes 6,7':c;
+function info(name){
+ if(!name){shell('Crane Information',`<div class="note">Tap a crane for its specifications. View only.</div>`+D.cranes.map(c=>`<button class="li" onclick="go('#/info/${encodeURIComponent(c.crane)}')"><div class="m"><b>${c.crane} <span class="tag gray">${c.ctype}</span></b><small>${c.rating} · ${c.config}</small></div>${c.aux_status==='Not in service'?'<span class="tag over">aux idle</span>':''}<span class="arr">›</span></button>`).join(''));return}
+ const c=D.cranes.find(x=>x.crane===name);const lr=latestRopes().filter(r=>r.crane===name);const ch=S.change.filter(r=>r.crane===name).sort((a,b)=>(b.date||'').localeCompare(a.date||''))[0];
+ const rope=(S.dims['Hoist Wire Rope']||[]).filter(r=>r[0]===grpOf(name));
+ shell(name,`<div class="card"><dl class="kv"><dt>Rating</dt><dd>${c.rating}</dd><dt>Configuration</dt><dd>${c.config}</dd><dt>Crane type</dt><dd>${c.ctype}</dd><dt>Equipment code</dt><dd>${esc(c.code)}</dd><dt>Aux hoist</dt><dd>${c.aux_status}</dd></dl></div>
+ <div class="card"><h3>Drives</h3><div class="tw"><table><tr><th>Mechanism</th><th class="c">Ratio</th><th class="c">C.D. mm</th><th class="c">rpm</th><th class="c">kW</th></tr>${c.mech.map(m=>`<tr><td>${m.name}</td><td class="c">${m.ratio??'N/A'}</td><td class="c">${m.cd??'N/A'}</td><td class="c">${m.rpm??'N/A'}</td><td class="c">${m.kw??'N/A'}</td></tr>`).join('')}</table></div><div class="note">Installed power ${c.mech.reduce((a,m)=>a+(m.kw||0),0).toFixed(1)} kW</div></div>
+ <div class="card"><h3>Wire rope (installed size)</h3><div class="tw"><table><tr><th>Hoist</th><th class="c">Size mm</th><th class="c">Length ft</th></tr>${rope.map(r=>`<tr><td>${esc(r[1])}</td><td class="c">${r[2]}</td><td class="c">${r[3]}</td></tr>`).join('')}</table></div></div>
+ <div class="card"><h3>Rope condition (latest reading)</h3>${lr.length?lr.map(r=>{const k=calc(r);return`<div style="display:flex;justify-content:space-between;gap:8px;padding:4px 0"><span>${esc(r.hoist)} · ${r.current} mm (${pc(k.red)})</span><span class="tag ${tagCls(k.check)}">${k.check}</span></div>`}).join(''):'No inspection recorded.'}</div>
+ <div class="card"><h3>Last rope change</h3>${ch?`${fmt(ch.date)} · ${esc(ch.hoist)} · ${ch.length} ft<br><small style="color:var(--mute)">${esc(ch.remark)}</small>`:'None recorded.'}</div>
+ <div class="btns"><button class="btn" onclick="FILT['change']='${name}';go('#/records/change')">Change log</button><button class="btn" onclick="FILT['maint']='${name}';go('#/records/maint')">Maintenance</button></div>`,{back:'#/info'})}
+
+let MG='Crane 1';
+const GS=['Crane 1','Cranes 2,3,4,5','Cranes 6,7','Crane N1','Crane N2'];
+const MSEC=[['Couplings',['Location','OD','ID in','ID out','PCD'],4],['Brake Drums',['Location','OD','ID in','ID out','PCD'],4],['Gear Boxes',['Location','Ratio','Vol. L'],2],['Wheels',['Wheel','Dia mm'],1],['Hoist Wire Rope',['Hoist','Size mm','Length ft','Remarks'],3]];
+function meas(){
+ const cell=v=>v==null||v===''?'<td class="pend">pending</td>':`<td class="c">${esc(v)}</td>`;
+ const sec=([n,head,cols])=>{const rows=(S.dims[n]||[]).map((r,i)=>[r,i]).filter(x=>x[0][0]===MG);
+  return `<div class="card"><h3>${n}</h3><div class="tw"><table class="tap"><tr>${head.map((h,i)=>`<th class="${i?'c':''}">${h}</th>`).join('')}</tr>${rows.map(([r,i])=>`<tr onclick="editDim('${n}',${i})"><td>${esc(r[1])}</td>${r.slice(2,2+cols).map(cell).join('')}</tr>`).join('')||`<tr><td colspan="${head.length}" class="pend">no rows</td></tr>`}</table></div>${canEdit()?`<button class="btn" style="width:100%;margin-top:8px" onclick="editDim('${n}')">＋ Add row</button>`:''}</div>`};
+ shell('Measurements',`<div class="chips">${GS.map(g=>`<button class="chip ${g===MG?'on':''}" onclick="MG='${g}';meas()">${g}</button>`).join('')}</div>
+ <div class="note" style="margin-top:0">${canEdit()?'Tap any row to enter or change its measurements.':'View only.'}</div>
+ ${MSEC.map(sec).join('')}<div class="note">mm unless stated · "pending" = not yet measured · type N/A where a part does not exist.</div>`)}
+function editDim(sec,idx){
+ if(viewOnly())return;const def=MSEC.find(m=>m[0]===sec),head=def[1],n=def[2],isNew=idx==null;
+ const rec=isNew?[MG,'',null,null,null,null]:[...S.dims[sec][idx]];while(rec.length<6)rec.push(null);
+ const last=sec==='Hoist Wire Rope'?n:0; // remarks column is free text
+ const vf=i=>{const v=rec[1+i]??'';const txt=i===last;return `<div class="fld"><label>${head[i]}</label><div style="display:flex;gap:8px"><input id="d_${i}" type="text" ${txt?'':'inputmode="decimal"'} value="${esc(v)}" placeholder="${txt?'':'not measured yet'}">${txt?'':`<button class="btn" style="flex:0 0 auto" onclick="document.getElementById('d_${i}').value='N/A'">N/A</button>`}</div></div>`};
+ const bg=document.createElement('div');bg.className='sheet-bg';
+ bg.innerHTML=`<div class="sheet"><h2>${isNew?'Add row – '+sec:'Edit – '+sec}</h2>
+ <div class="fld"><label>Crane group</label><select id="d_g">${GS.map(g=>`<option ${g===rec[0]?'selected':''}>${g}</option>`).join('')}</select></div>
+ <div class="fld"><label>${head[0]} *</label><input id="d_0" type="text" value="${esc(rec[1])}"></div>
+ ${Array.from({length:n},(_,k)=>vf(k+1)).join('')}
+ <div class="btns">${isNew?'':'<button class="btn d" id="del">Delete</button>'}<button class="btn" id="cancel">Cancel</button><button class="btn p" id="ok">Save</button></div></div>`;
+ document.body.appendChild(bg);bg.addEventListener('click',e=>{if(e.target===bg)bg.remove()});
+ $('#cancel').onclick=()=>bg.remove();
+ $('#ok').onclick=()=>{const name=$('#d_0').value.trim();if(!name){toast('Please fill: '+head[0]);return}
+  const o=[$('#d_g').value,name];for(let k=1;k<=4;k++){const el=$('#d_'+k);let v=el?el.value.trim():'';if(v==='')v=null;else if(k<=n&&k!==last&&/^-?\d+(\.\d+)?$/.test(v))v=+v;o.push(v)}
+  if(isNew)S.dims[sec].push(o);else S.dims[sec][idx]=o;
+  MG=o[0];save();bg.remove();toast(isNew?'Row added':'Measurement saved');meas()};
+ if(!isNew)$('#del').onclick=()=>{if(confirm('Delete this row?')){S.dims[sec].splice(idx,1);save();bg.remove();toast('Row deleted');meas()}}}
+
+function menuPage(title,items,xl=[]){shell(title,items.map(i=>`<button class="li" onclick="go('#/${i[0]}')"><span class="big">${i[1]}</span><div class="m"><b>${i[2]}</b><small>${i[3]}</small></div><span class="arr">›</span></button>`).join('')+(xl.length?`<div class="sec">Download Excel (filled with your records)</div>${xl.map(xbtn).join('')}`:''))}
+const records=()=>menuPage('Records',[['records/change','🔄','Crane rope change record',`${S.change.length} entries · view, add, edit`],['records/inspect','🔍','Crane rope inspection record',`${S.inspect.length} readings · view, add, edit`],['records/maint','🛠️','Monthly maintenance record',`${S.maint.length} entries · each crane, each month`]],['change','inspect','maint']);
+const stocks=()=>menuPage('Stocks',[['stocks/spares','⚙️','Gear couplings & drums',`${S.spares.length} lines · need vs stock`],['stocks/rope','🧵','Wire rope',`${S.ropeStock.reduce((a,r)=>a+(+r.qty||0),0)} pcs in stock · demand & consumed`],['stocks/misc','🧰','Gearboxes, shafts & brake leathers',`${S.misc.length} items`]],['gear','brake','rope']);
+
+function list(key,back,top=''){
+ const c=C[key];let rows=[...S[key]];const f=FILT[key]||'all';
+ if(c.filter&&f!=='all'){const ex=(c.extra||[]).find(e=>e.l===f);rows=ex?rows.filter(ex.f):rows.filter(r=>r[c.filter]===f)}
+ if(Q){const q=Q.toLowerCase();rows=rows.filter(r=>JSON.stringify(r).toLowerCase().includes(q))}
+ if(c.sort)rows.sort((a,b)=>{const x=a[c.sort]??'',y=b[c.sort]??'';const r=typeof x==='number'&&typeof y==='number'?x-y:String(x).localeCompare(String(y),undefined,{numeric:true});return c.desc?-r:r});
+ const chips=c.filter?['all',...c.chips(),...(c.extra||[]).map(e=>e.l)]:[];
+ const html=`${top}${c.sum?c.sum(rows):''}${c.filter?`<div class="chips">${chips.map(x=>`<button class="chip ${x===f?'on':''}" onclick="FILT['${key}']='${x}';render()">${x==='all'?'All':x}</button>`).join('')}</div>`:''}
+ <input class="search" type="search" placeholder="Search…" value="${esc(Q)}" oninput="Q=this.value;listBody('${key}')" id="q_${key}">
+ <div id="lb_${key}">${listItems(key,rows)}</div>
+ <div style="margin-top:14px">${(c.xl||[]).map(xbtn).join('')}</div><div class="btns"><button class="btn" onclick="csv('${key}')">⬇ Export CSV</button></div>`;
+ return html}
+function listBody(key){render()}
+function listItems(key,rows){const c=C[key];if(!rows.length)return `<div class="empty"><b>${c.icon}</b>No entries yet.<br>Tap ＋ to add one.</div>`;
+ return rows.map(r=>{const v=c.row(r);return `<button class="li" onclick="edit('${key}','${r.id}')"><div class="m"><b>${esc(v.t)}</b><small>${esc(v.s)}</small>${v.n?`<div class="n">${esc(v.n)}</div>`:''}</div><div style="text-align:right">${v.b?`<span class="tag ${tagCls(v.b)}">${v.b}</span>`:''}${v.b2?`<div class="n">${esc(v.b2)}</div>`:''}</div></button>`}).join('')}
+function listPage(key,back){shell(C[key].title,list(key),{back,fab:key});restoreSearch(key)}
+function restoreSearch(key){const e=$('#q_'+key);if(e&&Q){e.focus();e.setSelectionRange(Q.length,Q.length)}}
+function ropePage(){
+ const t=FILT.ropeTab||'ropeStock';
+ const seg=`<div class="seg">${[['ropeStock','In stock'],['ropeDemand','Demand'],['ropeUsed','Consumed']].map(x=>`<button class="${t===x[0]?'on':''}" onclick="FILT.ropeTab='${x[0]}';Q='';render()">${x[1]}</button>`).join('')}</div>`;
+ const tot=t==='ropeStock'?`<div class="sum"><div><b>${S.ropeStock.reduce((a,r)=>a+(+r.qty||0),0)}</b>pcs in stock</div><div><b>${S.ropeDemand.reduce((a,r)=>a+(+r.need||0),0)}</b>pcs demanded</div><div><b>${S.ropeDemand.reduce((a,r)=>a+demandRow(r).short,0)}</b>pcs short</div></div>`:'';
+ shell('Wire Rope Stock',list(t,'',seg+tot),{back:'#/stocks',fab:t});restoreSearch(t)}
+
+let HF='all',PRESET={},CUR_H=[];
+function inspectIndex(){
+ const rank={'OVER LIMIT':4,'WATCH':3,'REPLACED – RE-MEASURE':2,'OK':1},lr=latestRopes();
+ shell('Rope Inspection Record',`<div class="note">Pick a crane to open all its inspection readings, newest first.</div>`+CR.map(c=>{
+  const all=S.inspect.filter(r=>r.crane===c),worst=lr.filter(r=>r.crane===c).map(r=>calc(r).check).sort((a,b)=>(rank[b]||0)-(rank[a]||0))[0],last=all.map(r=>r.date||'').sort().pop();
+  return `<button class="li" onclick="HF='all';go('#/records/inspect/${encodeURIComponent(c)}')"><div class="m"><b>${c}</b><small>${all.length} reading${all.length==1?'':'s'}${all.length?' · last checked '+fmt(last):''}</small></div>${worst?`<span class="tag ${tagCls(worst)}">${worst}</span>`:''}<span class="arr">›</span></button>`}).join('')+`<div style="margin-top:14px">${xbtn('inspect')}</div>`,{back:'#/records',fab:'inspect'})}
+function inspectCrane(c){
+ PRESET={crane:c};
+ const all=S.inspect.filter(r=>r.crane===c);CUR_H=[...new Set(all.map(r=>r.hoist))];
+ const rows=all.filter(r=>HF==='all'||r.hoist===HF).sort((a,b)=>(b.date||'').localeCompare(a.date||'')||a.hoist.localeCompare(b.hoist));
+ const lat=latestRopes().filter(r=>r.crane===c),dates=[...new Set(rows.map(r=>r.date))];
+ shell(c+' · Inspections',`<div class="card"><h3>Latest reading of each hoist</h3>${lat.length?lat.map(r=>{const k=calc(r);return`<div style="display:flex;justify-content:space-between;gap:8px;padding:4px 0"><span>${esc(r.hoist)} · ${r.current} mm (${pc(k.red)}) <small style="color:var(--mute)">${fmt(r.date)}</small></span><span class="tag ${tagCls(k.check)}">${k.check}</span></div>`}).join(''):'No readings yet.'}</div>
+ ${CUR_H.length>1?`<div class="chips"><button class="chip ${HF==='all'?'on':''}" onclick="HF='all';render()">All hoists</button>${CUR_H.map((h,i)=>`<button class="chip ${HF===h?'on':''}" onclick="HF=CUR_H[${i}];render()">${esc(h)}</button>`).join('')}</div>`:''}
+ <div class="note">${rows.length} reading${rows.length==1?'':'s'} · newest first</div>
+ ${dates.length?dates.map(d=>`<div class="sec">${fmt(d)}</div>${listItems('inspect',rows.filter(r=>r.date===d))}`).join(''):listItems('inspect',[])}<div style="margin-top:14px">${xbtn('inspect')}</div>`,{back:'#/records/inspect',fab:'inspect'})}
+
+const hoistsFor=c=>D.specs.filter(s=>s.crane===c).map(s=>s.hoist);
+function autoFor(crane,hoist,date){
+ const sp=D.specs.find(s=>s.crane===crane&&s.hoist===hoist);if(!sp)return{};
+ const ch=sp.kw?S.change.filter(r=>r.crane===crane&&r.date&&sp.kw.some(k=>(r.hoist||'').toLowerCase().includes(k))).sort((a,b)=>b.date.localeCompare(a.date)):[];
+ const last=ch[0];let installed,length=sp.length;
+ if(last){installed=fmt(last.date);length=+last.length||sp.length}
+ else{const prev=S.inspect.filter(r=>r.crane===crane&&r.hoist===hoist&&r.installed).sort((a,b)=>(b.date||'').localeCompare(a.date||''))[0];installed=prev?prev.installed:'Not changed yet'}
+ return{std:sp.std,length,installed,replaced:last&&date&&last.date>date?last.date:'',fromLog:!!last}}
+
+// ---------- form
+function edit(key,id){
+ if(viewOnly())return;const c=C[key];const isNew=!id;const newIns=isNew&&key==='inspect';const FL=newIns?c.fieldsNew:c.fields;let dirty=false;const rec=isNew?{...(c.def?c.def():{}),...(key==='inspect'?PRESET:{})}:{...S[key].find(r=>r.id===id)};
+ const hl=`<datalist id="hoists">${hoistList().map(h=>`<option value="${esc(h)}">`).join('')}</datalist>`;
+ const fld=f=>{const v=rec[f.k]??'';const nm=`f_${f.k}`;let inp;
+  if(newIns&&f.k==='hoist'){f.o=hoistsFor(rec.crane);if(!rec.hoist)rec.hoist=f.o[0]||''}
+  if(f.t==='select')inp=`<select id="${nm}">${f.o.map(o=>`<option ${o===v?'selected':''} value="${esc(o)}">${o||'— select —'}</option>`).join('')}</select>`;
+  else if(f.t==='textarea')inp=`<textarea id="${nm}">${esc(v)}</textarea>`;
+  else if(f.t==='number')inp=`<input id="${nm}" type="number" inputmode="decimal" step="any" value="${esc(v)}">`;
+  else inp=`<input id="${nm}" type="${f.t==='date'?'date':f.t==='month'?'month':'text'}" ${f.list?'list="hoists"':''} value="${esc(v)}">`;
+  return `<div class="fld"><label>${f.l}${f.req?' *':''}</label>${inp}</div>`};
+ const bg=document.createElement('div');bg.className='sheet-bg';
+ bg.innerHTML=`<div class="sheet"><h2>${isNew?c.add:'Edit record'}</h2>${hl}${FL.map(fld).join('')}${newIns?'<div class="calc" id="auto"></div>':''}${c.calc?'<div class="calc" id="calc"></div>':''}<div class="btns">${isNew?'':'<button class="btn d" id="del">Delete</button>'}<button class="btn" id="cancel">Cancel</button><button class="btn p" id="ok">Save</button></div></div>`;
+ document.body.appendChild(bg);
+ const read=()=>{const o={};FL.forEach(f=>{let v=$('#f_'+f.k).value;if(f.t==='number'&&v!=='')v=+v;o[f.k]=v});if(newIns)Object.assign(o,(({std,length,replaced})=>({std,length,replaced}))(autoFor(o.crane,o.hoist,o.date)));return o};
+ const upd=()=>{if(!c.calc)return;if(newIns){const a=autoFor($('#f_crane').value,$('#f_hoist').value,$('#f_date').value);if(!dirty&&a.installed)$('#f_installed').value=a.installed;$('#auto').textContent=a.std?`Standard ${a.std} mm · length ${a.length} ft · last installed ${$('#f_installed').value||'–'}${a.fromLog?' (from rope change record)':''}`:'Choose a hoist'}const o=read();const k=calc(o);$('#calc').textContent=k.red==null?'Enter standard and current size to see reduction':`Reduction ${pc(k.red,2)} · limit ${pc(k.lim,0)} · discard at ${k.disc.toFixed(2)} mm · ${k.check}`};
+ bg.addEventListener('input',e=>{if(newIns){if(e.target.id==='f_crane'){$('#f_hoist').innerHTML=hoistsFor(e.target.value).map(h=>`<option>${esc(h)}</option>`).join('');dirty=false}if(e.target.id==='f_hoist'||e.target.id==='f_date')dirty=false;if(e.target.id==='f_installed')dirty=true}upd()});upd();
+ bg.addEventListener('click',e=>{if(e.target===bg)bg.remove()});
+ $('#cancel').onclick=()=>bg.remove();
+ $('#ok').onclick=()=>{const o=read();const miss=FL.find(f=>f.req&&(o[f.k]===''||o[f.k]==null));if(miss){toast(`Please fill: ${miss.l}`);return}
+  if(isNew)S[key].push({id:uid(),...o});else Object.assign(S[key].find(r=>r.id===id),o);save();bg.remove();toast(isNew?'Saved':'Updated');render()};
+ if(!isNew)$('#del').onclick=()=>{if(confirm('Delete this record?')){S[key]=S[key].filter(r=>r.id!==id);save();bg.remove();toast('Deleted');render()}}}
+
+// ---------- export / settings
+function dl(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.appendChild(a);a.click();a.remove()}
+function csv(key){const c=C[key];const q=v=>`"${String(v??'').replace(/"/g,'""')}"`;dl(`${key}_${today()}.csv`,'﻿'+[c.fields.map(f=>q(f.l)).join(','),...S[key].map(r=>c.fields.map(f=>q(r[f.k])).join(','))].join('\r\n'),'text/csv')}
+function settings(){const bg=document.createElement('div');bg.className='sheet-bg';
+ bg.innerHTML=`<div class="sheet"><h2>⚙ Live sync (GitHub)</h2><p class="note" style="margin:0 0 8px">${GH.token?'You are the <b>editor</b>: every change is uploaded to GitHub.':GH.repo?'<b>View only</b>: showing the latest data the editor published.':'Not connected: data stays on this device.'}${SYNC?'<br>'+esc(SYNC):''}</p>
+ <div class="fld"><label>GitHub repository (owner/name)</label><input id="gr" value="${esc(GH.repo||'')}" placeholder="yourname/your-repo"></div>
+ <div class="fld"><label>Editor token (leave empty to only view)</label><input id="gt" type="password" value="${esc(GH.token||'')}" placeholder="github_pat_…"></div>
+ <div class="btns" style="margin-bottom:14px"><button class="btn p" id="gs">Save sync settings</button></div><hr style="border:0;border-top:1px solid var(--line);margin:0 0 12px">
+ <h2>⚙ Data & backup</h2><p class="note" style="margin:0 0 12px">Records you add or edit are saved in this browser on this device. Use backup to move them to another phone or computer.</p>
+ <div class="btns" style="flex-direction:column"><button class="btn" id="exp">⬇ Backup all records (JSON)</button><button class="btn" id="imp">⬆ Restore from backup file</button><button class="btn d" id="rst" style="flex:1">Reset to original sample data</button><button class="btn" id="cl">Close</button></div><input type="file" id="file" accept="application/json" hidden></div>`;
+ document.body.appendChild(bg);bg.onclick=e=>{if(e.target===bg)bg.remove()};
+ $('#cl').onclick=()=>bg.remove();$('#gs').onclick=()=>{GH.repo=$('#gr').value.trim().replace(/^https?:\/\/github\.com\//,'').replace(/\/$/,'');GH.token=$('#gt').value.trim();try{localStorage.setItem(GHK,JSON.stringify({repo:GH.repo,token:GH.token,branch:GH.branch}))}catch(e){}bg.remove();toast(GH.token?'Editor mode on':'Saved');pull();render()};$('#exp').onclick=()=>dl(`EOT_Crane_App_backup_${today()}.json`,JSON.stringify(S,null,1),'application/json');
+ $('#imp').onclick=()=>{if(!viewOnly())$('#file').click()};
+ $('#file').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);if(!o.change||!o.inspect)throw 0;if(!confirm('Replace all current records with this backup?'))return;S=o;for(const k in D.seed)if(!S[k])S[k]=[];if(!S.dims)S.dims=JSON.parse(JSON.stringify(D.dims));save();bg.remove();toast('Backup restored');render()}catch(x){toast('That file is not a valid backup')}};r.readAsText(f)};
+ $('#rst').onclick=()=>{if(!viewOnly()&&confirm('Delete all your edits and go back to the original data?')){S=seed();save();bg.remove();toast('Reset done');render()}}}
+
+const LOGO_B64='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';
+// ---------- Excel (.xlsx) writer: no libraries, works fully offline
+const XL=(()=>{
+ const enc=new TextEncoder();
+ const esc=s=>String(s).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+ const CT=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;CT[n]=c>>>0}
+ const crc=b=>{let c=0xFFFFFFFF;for(let i=0;i<b.length;i++)c=CT[(c^b[i])&255]^(c>>>8);return(c^0xFFFFFFFF)>>>0};
+ const u16=n=>[n&255,(n>>8)&255],u32=n=>[n&255,(n>>>8)&255,(n>>>16)&255,(n>>>24)&255];
+ function zip(files){const parts=[],cen=[];let off=0;
+  for(const f of files){const nm=enc.encode(f.name),d=f.data,c=crc(d);
+   const lh=new Uint8Array([0x50,0x4b,3,4,20,0,0,8,0,0,0,0,0x21,0,...u32(c),...u32(d.length),...u32(d.length),...u16(nm.length),0,0]);
+   parts.push(lh,nm,d);
+   cen.push(new Uint8Array([0x50,0x4b,1,2,20,0,20,0,0,8,0,0,0,0,0x21,0,...u32(c),...u32(d.length),...u32(d.length),...u16(nm.length),0,0,0,0,0,0,0,0,0,0,0,0,...u32(off)]),nm);
+   off+=lh.length+nm.length+d.length}
+  let cs=0;cen.forEach(x=>cs+=x.length);
+  const end=new Uint8Array([0x50,0x4b,5,6,0,0,0,0,...u16(files.length),...u16(files.length),...u32(cs),...u32(off),0,0]);
+  const all=[...parts,...cen,end],out=new Uint8Array(all.reduce((a,x)=>a+x.length,0));let p=0;all.forEach(x=>{out.set(x,p);p+=x.length});return out}
+ const colName=n=>{let s='';while(n>0){const m=(n-1)%26;s=String.fromCharCode(65+m)+s;n=(n-m-1)/26}return s};
+ const ref=(r,c)=>colName(c)+r;
+ const xd=iso=>{const m=/^(\d{4})-(\d{2})(?:-(\d{2}))?/.exec(iso||'');return m?Math.round((Date.UTC(+m[1],+m[2]-1,+(m[3]||1))-Date.UTC(1899,11,30))/864e5):null};
+ const NS='http://schemas.openxmlformats.org/spreadsheetml/2006/main',RNS='http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+ const BUILTIN={General:0,'0':1,'0.00':2};
+
+ function book(){
+  const fonts=[],fills=[],borders=[],xfs=[],nfs=[],dxfs=[],sheets=[];let logo=null;
+  const idx=(list,key,make)=>{let i=list.findIndex(x=>x.key===key);if(i<0){list.push({key,xml:make()});i=list.length-1}return i};
+  idx(fonts,'d',()=>'<font><sz val="10"/><color rgb="FF000000"/><name val="Arial"/></font>');
+  idx(fills,'n',()=>'<fill><patternFill patternType="none"/></fill>');idx(fills,'g',()=>'<fill><patternFill patternType="gray125"/></fill>');
+  idx(borders,'n',()=>'<border><left/><right/><top/><bottom/><diagonal/></border>');
+  idx(xfs,'0',()=>'<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>');
+  const side=(n,s,c)=>s?`<${n} style="${s}"><color rgb="FF${c}"/></${n}>`:`<${n}/>`;
+  function xf(st){
+   if(!st)return 0;
+   const fk=[st.b?1:0,st.i?1:0,st.sz||10,st.c||'000000',st.n||'Arial'].join('|');
+   const fi=idx(fonts,fk,()=>`<font>${st.b?'<b/>':''}${st.i?'<i/>':''}<sz val="${st.sz||10}"/><color rgb="FF${st.c||'000000'}"/><name val="${esc(st.n||'Arial')}"/></font>`);
+   const fl=st.bg?idx(fills,st.bg,()=>`<fill><patternFill patternType="solid"><fgColor rgb="FF${st.bg}"/><bgColor indexed="64"/></patternFill></fill>`):0;
+   let bd=st.bd;if(typeof bd==='string')bd={l:bd,r:bd,t:bd,b:bd};bd=bd||{};const bc=st.bc||'000000';
+   const bk=[bd.l,bd.r,bd.t,bd.b,bc].join('|');
+   const bi=(bd.l||bd.r||bd.t||bd.b)?idx(borders,bk,()=>`<border>${side('left',bd.l,bc)}${side('right',bd.r,bc)}${side('top',bd.t,bc)}${side('bottom',bd.b,bc)}<diagonal/></border>`):0;
+   let ni=0;if(st.nf){ni=BUILTIN[st.nf]??(164+idx(nfs,st.nf,()=>`<numFmt numFmtId="${164+nfs.length}" formatCode="${esc(st.nf)}"/>`))}
+   const al=(st.h||st.v||st.w||st.ind)?`<alignment${st.h?` horizontal="${st.h}"`:''}${st.v?` vertical="${st.v}"`:''}${st.w?' wrapText="1"':''}${st.ind?` indent="${st.ind}"`:''}/>`:'';
+   return idx(xfs,[fi,fl,bi,ni,al].join('|'),()=>`<xf numFmtId="${ni}" fontId="${fi}" fillId="${fl}" borderId="${bi}" xfId="0" applyFont="1"${fl?' applyFill="1"':''}${bi?' applyBorder="1"':''}${ni?' applyNumberFormat="1"':''}${al?' applyAlignment="1">'+al+'</xf>':'/>'}`)}
+  const dxf=d=>idx(dxfs,JSON.stringify(d),()=>`<dxf>${d.b||d.c?`<font>${d.b?'<b/>':''}${d.c?`<color rgb="FF${d.c}"/>`:''}</font>`:''}${d.bg?`<fill><patternFill><bgColor rgb="FF${d.bg}"/></patternFill></fill>`:''}</dxf>`);
+
+  function sheet(name,o={}){
+   const sh={name,o,cells:new Map(),merges:[],cw:{},rh:{},cfs:[],freeze:0,img:null,
+    set(r,c,v,st){const old=sh.cells.get(r*1000+c);sh.cells.set(r*1000+c,{v,s:st===undefined&&old?old.s:st});return sh},
+    style(r,c,st){const old=sh.cells.get(r*1000+c);if(!old)sh.cells.set(r*1000+c,{v:null,s:st});else if(old.s===undefined)old.s=st;return sh},
+    merge(r1,c1,r2,c2,st){sh.merges.push([r1,c1,r2,c2]);if(st)for(let r=r1;r<=r2;r++)for(let c=c1;c<=c2;c++)sh.style(r,c,st);return sh},
+    w(c,x){sh.cw[c]=x;return sh},h(r,x){sh.rh[r]=x;return sh},
+    cf(sqref,rules){sh.cfs.push({sqref,rules});return sh}};
+   sheets.push(sh);return sh}
+
+  function cellXml(r,c,cell){
+   const a=ref(r,c),si=xf(cell.s),s=si?` s="${si}"`:'';let v=cell.v;
+   if(v==null||v==='')return`<c r="${a}"${s}/>`;
+   if(typeof v==='number')return isFinite(v)?`<c r="${a}"${s}><v>${v}</v></c>`:`<c r="${a}"${s}/>`;
+   if(typeof v==='object'&&v.f!=null){const cv=v.v;
+    if(typeof cv==='number')return`<c r="${a}"${s}><f>${esc(v.f)}</f><v>${cv}</v></c>`;
+    return`<c r="${a}"${s} t="str"><f>${esc(v.f)}</f><v>${esc(cv??'')}</v></c>`}
+   return`<c r="${a}"${s} t="inlineStr"><is><t xml:space="preserve">${esc(v)}</t></is></c>`}
+
+  function sheetXml(sh,i){
+   const o=sh.o,rows=new Map();let maxR=1,maxC=1;
+   for(const [k,cell] of sh.cells){const r=Math.floor(k/1000),c=k%1000;if(!rows.has(r))rows.set(r,[]);rows.get(r).push([c,cell]);maxR=Math.max(maxR,r);maxC=Math.max(maxC,c)}
+   for(const r of Object.keys(sh.rh))if(!rows.has(+r))rows.set(+r,[]);
+   let x=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<worksheet xmlns="${NS}" xmlns:r="${RNS}">`;
+   x+=`<sheetPr><pageSetUpPr fitToPage="1"/></sheetPr><dimension ref="A1:${ref(maxR,maxC)}"/>`;
+   x+=`<sheetViews><sheetView showGridLines="0"${i===0?' tabSelected="1"':''} workbookViewId="0">${sh.freeze?`<pane ySplit="${sh.freeze}" topLeftCell="A${sh.freeze+1}" activePane="bottomLeft" state="frozen"/><selection pane="bottomLeft" activeCell="A${sh.freeze+1}" sqref="A${sh.freeze+1}"/>`:''}</sheetView></sheetViews><sheetFormatPr defaultRowHeight="15"/>`;
+   const cws=Object.keys(sh.cw).map(Number).sort((a,b)=>a-b);
+   if(cws.length)x+='<cols>'+cws.map(c=>`<col min="${c}" max="${c}" width="${sh.cw[c]}" customWidth="1"/>`).join('')+'</cols>';
+   x+='<sheetData>';
+   for(const r of [...rows.keys()].sort((a,b)=>a-b)){
+    x+=`<row r="${r}"${sh.rh[r]?` ht="${sh.rh[r]}" customHeight="1"`:''}>`;
+    x+=rows.get(r).sort((a,b)=>a[0]-b[0]).map(([c,cell])=>cellXml(r,c,cell)).join('');x+='</row>'}
+   x+='</sheetData>';
+   if(sh.merges.length)x+=`<mergeCells count="${sh.merges.length}">`+sh.merges.map(m=>`<mergeCell ref="${ref(m[0],m[1])}:${ref(m[2],m[3])}"/>`).join('')+'</mergeCells>';
+   let pr=1;for(const g of sh.cfs){x+=`<conditionalFormatting sqref="${g.sqref}">`+g.rules.map(ru=>`<cfRule type="expression" dxfId="${dxf(ru.d)}" priority="${pr++}" stopIfTrue="1"><formula>${esc(ru.f)}</formula></cfRule>`).join('')+'</conditionalFormatting>'}
+   x+=`<printOptions horizontalCentered="1"/><pageMargins left="0.4" right="0.4" top="0.5" bottom="0.6" header="0.3" footer="0.3"/>`;
+   x+=`<pageSetup paperSize="9" orientation="${o.land?'landscape':'portrait'}" fitToWidth="1" fitToHeight="0"/>`;
+   if(o.footer)x+=`<headerFooter><oddFooter>${esc('&C&8'+o.footer+'&RPage &P of &N')}</oddFooter></headerFooter>`;
+   if(sh.img)x+='<drawing r:id="rId1"/>';
+   return x+'</worksheet>'}
+
+  function build(){
+   const files=[],add=(n,t)=>files.push({name:n,data:typeof t==='string'?enc.encode(t):t});
+   const sx=sheets.map((sh,i)=>sheetXml(sh,i)); // registers styles first
+   const hdr='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n';
+   let ct=`${hdr}<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="png" ContentType="image/png"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>`;
+   sheets.forEach((sh,i)=>{ct+=`<Override PartName="/xl/worksheets/sheet${i+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`;if(sh.img)ct+=`<Override PartName="/xl/drawings/drawing${i+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.drawing+xml"/>`});
+   add('[Content_Types].xml',ct+'</Types>');
+   add('_rels/.rels',`${hdr}<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`);
+   const titles=sheets.map((sh,i)=>sh.o.titles?`<definedName name="_xlnm.Print_Titles" localSheetId="${i}">'${esc(sh.name)}'!${sh.o.titles}</definedName>`:'').join('');
+   add('xl/workbook.xml',`${hdr}<workbook xmlns="${NS}" xmlns:r="${RNS}"><bookViews><workbookView/></bookViews><sheets>${sheets.map((sh,i)=>`<sheet name="${esc(sh.name)}" sheetId="${i+1}" r:id="rId${i+1}"/>`).join('')}</sheets>${titles?`<definedNames>${titles}</definedNames>`:''}<calcPr calcId="191029" fullCalcOnLoad="1"/></workbook>`);
+   add('xl/_rels/workbook.xml.rels',`${hdr}<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${sheets.map((sh,i)=>`<Relationship Id="rId${i+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i+1}.xml"/>`).join('')}<Relationship Id="rId${sheets.length+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`);
+   add('xl/styles.xml',`${hdr}<styleSheet xmlns="${NS}">${nfs.length?`<numFmts count="${nfs.length}">${nfs.map(x=>x.xml).join('')}</numFmts>`:''}<fonts count="${fonts.length}">${fonts.map(x=>x.xml).join('')}</fonts><fills count="${fills.length}">${fills.map(x=>x.xml).join('')}</fills><borders count="${borders.length}">${borders.map(x=>x.xml).join('')}</borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="${xfs.length}">${xfs.map(x=>x.xml).join('')}</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles><dxfs count="${dxfs.length}">${dxfs.map(x=>x.xml).join('')}</dxfs></styleSheet>`);
+   sheets.forEach((sh,i)=>{add(`xl/worksheets/sheet${i+1}.xml`,sx[i]);
+    if(sh.img&&logo){
+     add(`xl/worksheets/_rels/sheet${i+1}.xml.rels`,`${hdr}<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" Target="../drawings/drawing${i+1}.xml"/></Relationships>`);
+     add(`xl/drawings/_rels/drawing${i+1}.xml.rels`,`${hdr}<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/logo.png"/></Relationships>`);
+     const cx=sh.img.cx,cy=sh.img.cy;
+     add(`xl/drawings/drawing${i+1}.xml`,`${hdr}<xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><xdr:oneCellAnchor><xdr:from><xdr:col>0</xdr:col><xdr:colOff>76200</xdr:colOff><xdr:row>0</xdr:row><xdr:rowOff>38100</xdr:rowOff></xdr:from><xdr:ext cx="${cx}" cy="${cy}"/><xdr:pic><xdr:nvPicPr><xdr:cNvPr id="2" name="Logo"/><xdr:cNvPicPr><a:picLocks noChangeAspect="1"/></xdr:cNvPicPr></xdr:nvPicPr><xdr:blipFill><a:blip xmlns:r="${RNS}" r:embed="rId1"/><a:stretch><a:fillRect/></a:stretch></xdr:blipFill><xdr:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></xdr:spPr></xdr:pic><xdr:clientData/></xdr:oneCellAnchor></xdr:wsDr>`)}});
+   if(logo&&sheets.some(s=>s.img))add('xl/media/logo.png',logo);
+   return zip(files)}
+  return{sheet,build,setLogo:b=>{logo=b}}}
+ return{book,xd,ref,colName}})();
+
+// ---------- Excel reports (six downloadable records, filled from the app's saved data)
+const XMIME='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+const X_RED='CF202F',X_INK='1F1F2E',X_PINK='FBE9EB',X_BLUE='0000FF',X_GREY='F5F6F7';
+const num=x=>{const n=+x;return x===''||x==null||isNaN(n)?x:n};
+const b64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+const xbook=()=>{const b=XL.book();b.setLogo(b64(LOGO_B64));return b};
+const cmpNum=(a,b)=>(typeof a==='number'?a:1e9)-(typeof b==='number'?b:1e9);
+const STATUS_CF=col=>[
+ {f:`ISNUMBER(SEARCH("NOT OK",${col}))`,d:{b:1,c:'7E0F0F',bg:'FDE3E3'}},
+ {f:`ISNUMBER(SEARCH("LAST STAGE",${col}))`,d:{b:1,c:'7F5200',bg:'FFF2CC'}},
+ {f:`ISNUMBER(SEARCH("INVALID",${col}))`,d:{b:1,c:'454A4F',bg:'E3E5E8'}},
+ {f:`ISNUMBER(SEARCH("OK",${col}))`,d:{b:1,c:'1F7A4D',bg:'DFF2E8'}}];
+// Same status rules as the inspection template (reduction in percentage points)
+function xStatus(red,std,lim){const R=x=>Math.round(x*100)/100,dr=lim*100;
+ if(R(red)<-5)return'INVALID';if(R(red)<=0)return'NEW / OK';if(R(red)>R(dr))return'NOT OK / URGENTLY CHANGE IT';if(R(red)===R(dr))return'NOT OK / CHANGE IT';
+ if(red<dr*.2)return'BEST / OK';if(red<dr*.4)return'BETTER / OK';if(red<dr*.6)return'GOOD / OK';if(red<dr*.8)return'FAIR / OK';return'LAST STAGE FOR USE'}
+const xStatusF=(g,i,std)=>`IF(${g}="","",IF(ROUND(H${i},2)<-5,"INVALID",IF(ROUND(H${i},2)<=0,"NEW / OK",IF(ROUND(H${i},2)>ROUND(100-I${i}/${std}*100,2),"NOT OK / URGENTLY CHANGE IT",IF(ROUND(H${i},2)=ROUND(100-I${i}/${std}*100,2),"NOT OK / CHANGE IT",IF(H${i}<(100-I${i}/${std}*100)*0.2,"BEST / OK",IF(H${i}<(100-I${i}/${std}*100)*0.4,"BETTER / OK",IF(H${i}<(100-I${i}/${std}*100)*0.6,"GOOD / OK",IF(H${i}<(100-I${i}/${std}*100)*0.8,"FAIR / OK","LAST STAGE FOR USE")))))))))`;
+const xDate=iso=>XL.xd(iso);
+const DATE_NF='dd-mmm-yyyy';
+
+// ---- shared look of the stock-record template (logo, title, red section bars, dark table headers)
+const xs={
+ bar:{b:1,sz:12,c:'FFFFFF',bg:X_RED,h:'left',v:'center',ind:1},
+ th:{b:1,sz:11,c:'FFFFFF',bg:X_INK,h:'center',v:'center',w:1,bd:'thin'},
+ td:(i,o={})=>({sz:11,bd:'thin',h:'center',v:'center',w:1,bg:i%2?X_PINK:undefined,...o}),
+ note:{i:1,sz:9,c:X_INK,w:1,v:'top'}};
+function xTitle(sh,title,n){
+ sh.img={cx:640000,cy:660000};
+ for(let r=1;r<=3;r++)sh.h(r,24);
+ sh.set(1,3,title,{b:1,sz:18,c:X_INK,h:'center',v:'center',w:1});sh.merge(1,3,3,n);
+ for(let c=1;c<=n;c++)sh.style(3,c,{bd:{b:'thin'}})}
+function xBar(sh,r,n,text){sh.set(r,1,text,xs.bar);sh.merge(r,1,r,n,xs.bar);sh.h(r,21.75)}
+function xHead(sh,r,labels,mergeLast){labels.forEach((l,i)=>sh.set(r,i+1,l,xs.th));if(mergeLast){const [a,b]=mergeLast;sh.merge(r,a,r,b,xs.th)}sh.h(r,31.5)}
+
+// =====================================================================
+// 1. Wire rope stock record  (Stock / Consumed / Demand)
+// =====================================================================
+function xRope(){
+ const bk=xbook(),sh=bk.sheet('Wire Rope Stock',{footer:'Sheikhoo Steel  •  Wire Rope Stock Record'});
+ [10,16,14,16,18,15,30].forEach((w,i)=>sh.w(i+1,w));
+ xTitle(sh,'WIRE ROPE STOCK RECORD',7);
+ sh.set(4,1,'1 ft = (mm)',{i:1,sz:9,c:X_INK});sh.set(4,2,304.8,{sz:9,c:X_BLUE,h:'left'});
+ const MM=304.8;
+ const stock=[...S.ropeStock].map(r=>({...r,length:num(r.length),dia:num(r.dia),qty:num(r.qty)})).sort((a,b)=>(a.dia-b.dia)||cmpNum(a.length,b.length));
+ // ---- STOCK
+ let r=6;xBar(sh,r,7,'STOCK');r++;xHead(sh,r,['S.No','Diameter (mm)','Length (ft)','Length (mm)','Quantity (Pcs)','Description',''],[6,7]);r++;
+ const s1=r,n1=Math.max(stock.length,7);
+ for(let i=0;i<n1;i++,r++){const d=stock[i]||{},L=d.length,ok=typeof L==='number';
+  sh.set(r,1,i+1,xs.td(i));sh.set(r,2,d.dia??null,xs.td(i,{c:X_BLUE}));sh.set(r,3,L??null,xs.td(i,{c:X_BLUE}));
+  sh.set(r,4,{f:`IF(ISNUMBER(C${r}),C${r}*$B$4,"")`,v:ok?L*MM:''},xs.td(i,{nf:'#,##0'}));
+  sh.set(r,5,d.qty??null,xs.td(i,{c:X_BLUE}));sh.set(r,6,d.desc??null,xs.td(i,{c:X_BLUE,h:'left'}));sh.merge(r,6,r,7,xs.td(i,{c:X_BLUE,h:'left'}));
+  sh.h(r,String(d.desc||'').length>34?30:18)}
+ const e1=r-1;
+ sh.set(r,1,'TOTAL PIECES IN STOCK',{b:1,sz:11,bd:'thin',h:'right',v:'center',ind:1});sh.merge(r,1,r,4,{b:1,sz:11,bd:'thin',h:'right',v:'center',ind:1});
+ sh.set(r,5,{f:`SUM(E${s1}:E${e1})`,v:stock.reduce((a,x)=>a+(+x.qty||0),0)},{b:1,sz:11,bd:'thin',h:'center',v:'center'});sh.set(r,6,null,{bd:'thin'});sh.merge(r,6,r,7,{bd:'thin'});
+ r+=2;
+ // ---- CONSUMED
+ const used=[...S.ropeUsed].sort((a,b)=>(a.date||'9999').localeCompare(b.date||'9999'));
+ xBar(sh,r,7,'CONSUMED');r++;xHead(sh,r,['S.No','Diameter (mm)','Length (ft)','Length (mm)','Quantity Consumed','Date','Used For']);r++;
+ const n2=Math.max(used.length,5);
+ for(let i=0;i<n2;i++,r++){const d=used[i]||{},L=num(d.length),ok=typeof L==='number';
+  sh.set(r,1,i+1,xs.td(i));sh.set(r,2,num(d.dia)??null,xs.td(i,{c:X_BLUE}));sh.set(r,3,L??null,xs.td(i,{c:X_BLUE}));
+  sh.set(r,4,{f:`IF(ISNUMBER(C${r}),C${r}*$B$4,"")`,v:ok?L*MM:''},xs.td(i,{nf:'#,##0'}));
+  sh.set(r,5,num(d.qty)??null,xs.td(i,{c:X_BLUE}));sh.set(r,6,xDate(d.date),xs.td(i,{c:X_BLUE,nf:DATE_NF}));sh.set(r,7,d.usedfor??null,xs.td(i,{c:X_BLUE,h:'left'}))}
+ r++;
+ // ---- DEMAND (with live In Stock / Short)
+ const dem=[...S.ropeDemand].map(x=>({...x,dia:num(x.dia),length:num(x.length),need:num(x.need)})).sort((a,b)=>(a.dia-b.dia)||cmpNum(a.length,b.length));
+ xBar(sh,r,7,'DEMAND');r++;xHead(sh,r,['S.No','Diameter (mm)','Length (ft)','Length (mm)','Quantity (Pcs)','In Stock','Short']);r++;
+ const s3=r,n3=Math.max(dem.length,3);
+ for(let i=0;i<n3;i++,r++){const d=dem[i]||{},L=d.length,ok=typeof L==='number',k=d.dia!=null?demandRow(d):{have:0,short:0};
+  sh.set(r,1,i+1,xs.td(i));sh.set(r,2,d.dia??null,xs.td(i,{c:X_BLUE}));sh.set(r,3,L??null,xs.td(i,{c:X_BLUE}));
+  sh.set(r,4,{f:`IF(ISNUMBER(C${r}),C${r}*$B$4,"")`,v:ok?L*MM:''},xs.td(i,{nf:'#,##0'}));sh.set(r,5,d.need??null,xs.td(i,{c:X_BLUE}));
+  sh.set(r,6,{f:`IF(B${r}="","",SUMIFS($E$${s1}:$E$${e1},$B$${s1}:$B$${e1},B${r},$C$${s1}:$C$${e1},C${r}))`,v:d.dia!=null?k.have:''},xs.td(i));
+  sh.set(r,7,{f:`IF(B${r}="","",MAX(0,E${r}-F${r}))`,v:d.dia!=null?k.short:''},xs.td(i,{b:1}))}
+ sh.cf(`G${s3}:G${r-1}`,[{f:`AND(ISNUMBER($G${s3}),$G${s3}>0)`,d:{b:1,c:'7E0F0F',bg:'FDE3E3'}}]);
+ r++;
+ sh.set(r,1,'Note: Blue cells are inputs. Each row is a separate rope length (not totaled). Length (mm) = Length (ft) × 304.8. In Stock and Short in the Demand table are calculated from the Stock table.',xs.note);sh.merge(r,1,r,7,xs.note);sh.h(r,30);
+ return bk}
+
+// =====================================================================
+// 2. Wire rope inspection record  (page 1 = report like the template, page 2 = every reading)
+// =====================================================================
+const INS_GROUPS=[['Billet crane\n(crane no#1)',[0]],['Scrap yard\n(Crane no 2)',[1,2]],['Scrap yard\n(Crane no 3)',[3,4]],['Scrap yard\n(Crane no 4)',[5]],['Scrap yard\n(Crane no 5)',[6]],['Ladel Crane\n(Crane no #6)',[7,8]],['Ladel Crane\n(Crane no #7)',[9,10]],['Ladel Crane\n(Crane no #N2)',[11,12,13]],['Scrab yard  crane\n(Crane no #N1)',[14,15]]];
+const INS_CAP=['10 TON','15 TON','10 TON','Busbar side carriage 20 TON hoist','Cabin side carriage 20 TON hoist','15 TON','15 TON','50 TON','20 TON','50 TON','20 TON','70 TON','70 TON','30 TON','Cabin side 15 TON hoist','Busbar side 15 TON hoist'];
+const INS_ACTUAL={0:17,2:17}; // template "Actual Installed" differs from the standard size only for these two 16 mm ropes
+function xInspect(){
+ const bk=xbook(),sh=bk.sheet('Inspection Report',{land:1,footer:'Sheikhoo Steel  •  Wire Rope Inspection Report'});
+ const NB='454A4F',bd={l:'thin',r:'thin',t:'thin',b:'thin'};
+ const cs=(o={})=>({sz:14,c:'111111',bd,bc:NB,h:'center',v:'center',w:1,...o});
+ [11,28,22,18,13,16,15,18,26,22,40.7,36].forEach((w,i)=>sh.w(i+1,w));
+ const ttl={b:1,c:'000000',h:'center',v:'center',bd,bc:'C51F1F'};
+ sh.set(1,1,'Sheikhoo Steel Meltshop',{...ttl,sz:20});sh.merge(1,1,1,12,{...ttl,sz:20});sh.h(1,36);
+ sh.set(2,1,'Crane Wire Rope Inspection Report',{...ttl,sz:16,bc:'000000'});sh.merge(2,1,2,12,{...ttl,sz:16,bc:'000000'});sh.h(2,27.75);
+ const lr=latestRopes(),key=(c,h)=>lr.find(r=>r.crane===c&&r.hoist===h);
+ const dates=lr.map(r=>r.date).filter(Boolean).sort(),rep=dates.length?dates[dates.length-1]:today();
+ sh.set(3,1,null,cs());sh.merge(3,1,3,8,cs());
+ sh.set(3,9,'Dated:',cs({b:1,sz:16,h:'right',ind:1}));
+ sh.set(3,10,xDate(rep),cs({b:1,sz:20,nf:DATE_NF}));sh.merge(3,10,3,12,cs({b:1,sz:20,nf:DATE_NF}));sh.h(3,33.75);
+ ['Sr. No','Section','Capacity (Tons)',"Std. Define in SOP'S",'Length','Actual Installed','Current Size','%Age Reduction',"Std. Discraded ROPE Dia(mm) in SOP'S",'Last Installation Date','Status','Remarks']
+  .forEach((l,i)=>sh.set(4,i+1,l,cs({b:1,sz:12,bg:X_GREY})));sh.h(4,61.5);
+ let r=5,sr=1;const first=r;
+ INS_GROUPS.forEach(([label,ix],g)=>{const bg=g%2?undefined:X_GREY,r0=r;
+  ix.forEach((si,k)=>{const sp=D.specs[si],rd=key(sp.crane,sp.hoist),lim=limitFor(sp.crane);
+   const cur=rd&&rd.current!==''&&rd.current!=null?+rd.current:null,len=rd&&rd.length?rd.length:sp.length;
+   const red=cur?100-cur/sp.std*100:'',st=cur?xStatus(red,sp.std,lim):'';
+   const rem=[rd&&rd.date&&rd.date!==rep?`Reading of ${fmt(rd.date)}`:'',rd&&rd.remark||''].filter(Boolean).join(' – ');
+   if(k===0){sh.set(r,1,sr++,cs({bg}));sh.set(r,2,label,cs({b:1,bg}))}
+   sh.set(r,3,INS_CAP[si],cs({bg}));sh.set(r,4,sp.std+' mm',cs({bg}));sh.set(r,5,len+' ft',cs({bg}));
+   sh.set(r,6,INS_ACTUAL[si]??sp.std,cs({b:1,c:'7E0F0F',bg}));
+   sh.set(r,7,cur,cs({bg,nf:'0.00'}));
+   sh.set(r,8,{f:`IF(G${r}="","",100-(G${r}/${sp.std}*100))`,v:red},cs({bg,nf:'0.00"%"'}));
+   sh.set(r,9,{f:`${sp.std}*${+(1-lim).toFixed(2)}`,v:+(sp.std*(1-lim)).toFixed(4)},cs({bg,nf:'0.00'}));
+   sh.set(r,10,rd?rd.installed||'':'',cs({bg,sz:12}));
+   sh.set(r,11,{f:xStatusF('G'+r,r,sp.std),v:st},cs({bg,b:1,sz:12}));
+   sh.set(r,12,rem,cs({bg,sz:12,h:'left',ind:1}));
+   sh.h(r,48);r++});
+  if(ix.length>1){sh.merge(r0,1,r-1,1,cs({bg}));sh.merge(r0,2,r-1,2,cs({b:1,bg}))}
+  });
+ sh.cf(`K${first}:K${r-1}`,STATUS_CF(`$K${first}`));
+ // signatures
+ const sg=cs({b:1,sz:12,v:'top',bd});const t='\n\n\n\nName & Sign: ____________________';
+ sh.set(r,1,'Shift Incharge Mechanical'+t,sg);sh.merge(r,1,r,4,sg);sh.set(r,5,'Mechanical Incharge'+t,sg);sh.merge(r,5,r,8,sg);sh.set(r,9,'Manager'+t,sg);sh.merge(r,9,r,12,sg);sh.h(r,90);
+ sh.o.titles='$4:$4';
+ // ---- sheet 2: every reading on record
+ const h2=bk.sheet('All Readings',{land:1,titles:'$4:$4',footer:'Sheikhoo Steel  •  Wire Rope Inspection – all readings'});
+ [14,14,22,12,12,13,14,12,30,16,44].forEach((w,i)=>h2.w(i+1,w));
+ h2.set(1,1,'Sheikhoo Steel Meltshop – Wire Rope Inspection: all readings',{b:1,sz:16,v:'center'});h2.merge(1,1,1,11);h2.h(1,30);
+ h2.set(2,1,'Newest first. Reduction and status use the same rules as the inspection report.',{i:1,sz:9});h2.merge(2,1,2,11);
+ const th={b:1,sz:11,c:'FFFFFF',bg:X_INK,h:'center',v:'center',w:1,bd:'thin'};
+ ['Date','Crane','Hoist','Std (mm)','Length (ft)','Current (mm)','Reduction','Limit','Status','Last installed','Remarks'].forEach((l,i)=>h2.set(4,i+1,l,th));h2.h(4,30);h2.freeze=4;
+ const all=[...S.inspect].sort((a,b)=>(b.date||'').localeCompare(a.date||'')||CR.indexOf(a.crane)-CR.indexOf(b.crane));
+ const td=(o={})=>({sz:10,bd:'thin',v:'center',h:'center',w:1,...o});let q=5;
+ all.forEach((x,i)=>{const lim=limitFor(x.crane),std=+x.std,cur=+x.current,ok=std&&cur,red=ok?100-cur/std*100:'',bg=i%2?X_GREY:undefined;
+  h2.set(q,1,xDate(x.date),td({bg,nf:DATE_NF}));h2.set(q,2,x.crane,td({bg}));h2.set(q,3,x.hoist,td({bg,h:'left'}));h2.set(q,4,std||null,td({bg}));h2.set(q,5,num(x.length)||null,td({bg}));
+  h2.set(q,6,ok?cur:null,td({bg,nf:'0.00'}));
+  h2.set(q,7,{f:`IF(OR(D${q}="",F${q}=""),"",100-F${q}/D${q}*100)`,v:red},td({bg,nf:'0.00"%"'}));
+  h2.set(q,8,lim*100,td({bg,nf:'0"%"'}));
+  h2.set(q,9,{f:`IF(G${q}="","",IF(G${q}>=H${q},"OVER LIMIT",IF(G${q}>=0.8*H${q},"WATCH","OK")))`,v:ok?(red>=lim*100?'OVER LIMIT':red>=.8*lim*100?'WATCH':'OK'):''},td({bg,b:1}));
+  h2.set(q,10,x.installed||'',td({bg}));h2.set(q,11,x.remark||'',td({bg,h:'left'}));q++});
+ if(all.length)h2.cf(`I5:I${q-1}`,[{f:'$I5="OVER LIMIT"',d:{b:1,c:'7E0F0F',bg:'FDE3E3'}},{f:'$I5="WATCH"',d:{b:1,c:'7F5200',bg:'FFF2CC'}},{f:'$I5="OK"',d:{b:1,c:'1F7A4D',bg:'DFF2E8'}}]);
+ return bk}
+
+// =====================================================================
+// 3. Wire rope change record
+// =====================================================================
+const CHG_GROUPS=[
+ ['Crane 1','Billet crane\n(crane no#1)',[['10 TON',[''],1]]],
+ ['Crane 2','Scrap yard\n(Crane no 2)',[['15 TON',['main'],4],['Aux 10 TON',['aux'],1]]],
+ ['Crane 3','Scrap yard\n(Crane no 3)',[['Cabin side carriage 20 TON hoist',['cabin'],2],['Busbar side carriage 20 TON hoist',['busbar'],8]]],
+ ['Crane 4','Scrap yard\n(Crane no 4)',[['15 TON',['main'],5],['Small axaliary  10 Ton',['aux','small'],2]]],
+ ['Crane 5','Scrap yard\n(Crane no 5)',[['15 TON',['main'],2],['Axailary 10 Ton',['aux'],1]]],
+ ['Crane 6','Ladel Crane\n(Crane no #6)',[['50 TON',['main'],4],['20 TON',['aux'],2]]],
+ ['Crane 7','Ladel Crane\n(Crane no #7)',[['50 TON',['main'],4],['20 TON',['aux'],5]]],
+ ['Crane N1','Scrab yard crane\n(Crane no #N1)',[['Cabin side 15 TON hoist',['cabin','magnet'],1],['Busbar side 15 TON hoist',['busbar','auxiliary'],1]]],
+ ['Crane N2','Ladel Crane\n(Crane no #N2)',[['70 TON',['main'],1],['30 TON',['aux'],1]]]];
+function xChange(){
+ const bk=XL.book(),sh=bk.sheet('Change Record',{titles:'$4:$4',footer:'Sheikhoo Steel  •  Crane Wire Rope Replacement Record'});
+ const TN='Times New Roman',bd='thin';
+ const cs=(o={})=>({n:TN,sz:12,bd,h:'center',v:'center',w:1,...o});
+ [7.7,20,25.9,17.6,16.9,40].forEach((w,i)=>sh.w(i+1,w));
+ sh.set(2,1,'Crane wire Rope Replacemt Record',{n:TN,b:1,sz:20,h:'center',v:'center',bd});sh.merge(2,1,2,6,{n:TN,b:1,sz:20,h:'center',v:'center',bd});sh.h(2,34);
+ ['Sr No','Crane no','Hoist','Date of change','Length of wire','Remarks'].forEach((l,i)=>sh.set(4,i+1,l,cs({sz:14,b:1})));sh.h(4,26);sh.freeze=4;
+ const byDate=(a,b)=>(a.date||'9999').localeCompare(b.date||'9999');
+ let r=5,sr=1;
+ const block=(cr,label,hoists,entries)=>{const r0=r;
+  hoists.forEach(([hl,rows])=>{const h0=r;
+   rows.forEach(e=>{sh.set(r,1,sr++,cs({h:'center'}));sh.set(r,4,e?xDate(e.date):null,cs({nf:DATE_NF}));sh.set(r,5,e?num(e.length)||null:null,cs({nf:'0" ft"'}));sh.set(r,6,e?e.remark||'':'',cs({h:'left',ind:1,sz:11}));
+    sh.h(r,String(e&&e.remark||'').length>40?32:21);r++});
+   sh.set(h0,3,hl,cs({sz:12}));sh.merge(h0,3,r-1,3,cs({sz:12}));
+   for(let q=h0;q<r;q++){sh.style(q,1,cs());sh.style(q,2,cs());sh.style(q,4,cs());sh.style(q,5,cs());sh.style(q,6,cs())}});
+  sh.set(r0,2,label,cs());sh.merge(r0,2,r-1,2,cs());if(r-r0<2)sh.h(r0,34)};
+ CHG_GROUPS.forEach(([cr,label,hs])=>{
+  const mine=S.change.filter(x=>x.crane===cr).sort(byDate);const slots=hs.map(()=>[]);const other={};
+  mine.forEach(e=>{const hl=String(e.hoist||'').toLowerCase();const k=hs.findIndex(h=>h[1].some(w=>hl.includes(w)));if(k>=0)slots[k].push(e);else(other[e.hoist||'(no hoist named)']=other[e.hoist||'(no hoist named)']||[]).push(e)});
+  const hoists=hs.map((h,k)=>[h[0],[...slots[k],...Array(Math.max(0,h[2]-slots[k].length)).fill(null)]]);
+  Object.keys(other).forEach(n=>hoists.push([n,other[n]]));
+  block(cr,label,hoists)});
+ // entries whose crane is not one of the nine (should not happen, kept so nothing is lost)
+ const known=new Set(CHG_GROUPS.map(g=>g[0])),rest=S.change.filter(x=>!known.has(x.crane)).sort(byDate);
+ if(rest.length)block('',rest[0].crane||'Other',[['Other',rest]]);
+ return bk}
+
+// =====================================================================
+// 4. Monthly maintenance record
+// =====================================================================
+function xMaint(){
+ const bk=xbook(),sh=bk.sheet('Maintenance Record',{land:1,titles:'$7:$7',footer:'Sheikhoo Steel  •  Monthly Maintenance Record'});
+ [8,13,15,14,46,30,13,16,34].forEach((w,i)=>sh.w(i+1,w));
+ xTitle(sh,'MONTHLY MAINTENANCE RECORD',9);
+ const rows=[...S.maint].sort((a,b)=>(a.month||'').localeCompare(b.month||'')||(CR.indexOf(a.crane)<0?99:CR.indexOf(a.crane))-(CR.indexOf(b.crane)<0?99:CR.indexOf(b.crane)));
+ sh.set(5,1,'Melt Shop · Mechanical Maintenance · all EOT cranes',{i:1,sz:9,c:X_INK});
+ xBar(sh,6,9,'MAINTENANCE LOG');xHead(sh,7,['Sr No','Month','Crane','Type','Work Done','Parts / Material Used','Downtime (min)','Done By','Remarks']);sh.freeze=7;
+ const n=Math.max(rows.length,10);let r=8;
+ for(let i=0;i<n;i++,r++){const d=rows[i]||{};
+  sh.set(r,1,i+1,xs.td(i));sh.set(r,2,xDate(d.month),xs.td(i,{nf:'mmm yyyy',c:X_BLUE}));sh.set(r,3,d.crane??null,xs.td(i,{c:X_BLUE}));sh.set(r,4,d.type??null,xs.td(i,{c:X_BLUE}));
+  sh.set(r,5,d.work??null,xs.td(i,{c:X_BLUE,h:'left'}));sh.set(r,6,d.parts??null,xs.td(i,{c:X_BLUE,h:'left'}));sh.set(r,7,num(d.downtime)??null,xs.td(i,{c:X_BLUE}));
+  sh.set(r,8,d.by??null,xs.td(i,{c:X_BLUE}));sh.set(r,9,d.remark??null,xs.td(i,{c:X_BLUE,h:'left'}));
+  sh.h(r,Math.max(20,Math.ceil(String(d.work||'').length/48)*15+4))}
+ const tt={b:1,sz:11,bd:'thin',h:'right',v:'center',ind:1};
+ sh.set(r,1,'TOTAL DOWNTIME (min)',tt);sh.merge(r,1,r,6,tt);
+ sh.set(r,7,{f:`SUM(G8:G${r-1})`,v:rows.reduce((a,x)=>a+(+x.downtime||0),0)},{b:1,sz:11,bd:'thin',h:'center',v:'center'});sh.set(r,8,null,{bd:'thin'});sh.set(r,9,null,{bd:'thin'});
+ r+=2;const sg={b:1,sz:11,v:'top',w:1,bd:'thin'};const t='\n\n\n\nName & Sign: ____________________';
+ sh.set(r,1,'Shift Incharge Mechanical'+t,sg);sh.merge(r,1,r,4,sg);sh.set(r,5,'Mechanical Incharge'+t,{...sg,h:'center'});sh.set(r,6,null,sg);sh.merge(r,5,r,6,{...sg,h:'center'});sh.set(r,7,'Manager'+t,sg);sh.merge(r,7,r,9,sg);sh.h(r,90);
+ return bk}
+
+// =====================================================================
+// 5 + 6. Stock records on one grid: Gear couplings & gearboxes / Brake thrusters & brake leathers
+// =====================================================================
+function xGrid(sheetName,title,sections){
+ const bk=xbook(),sh=bk.sheet(sheetName,{land:1,footer:'Sheikhoo Steel  •  '+title.replace(/\b\w+/g,w=>w[0]+w.slice(1).toLowerCase()).replace(' And ',' and ')});
+ const N=10;[8,18,20,36,10,11,12,12,10,38].forEach((w,i)=>sh.w(i+1,w));
+ xTitle(sh,title,N);
+ sh.set(4,1,'Blue cells are inputs. Total = In Store + In Workshop. Short = Need − Total.',{i:1,sz:9,c:X_INK});
+ let r=6;
+ for(const sec of sections){
+  xBar(sh,r,N,sec.title);r++;
+  xHead(sh,r,sec.spares?['S.No','Cranes','Capacity','Item','Our Need','In Store','In Workshop','Total','Short','Remarks']:['S.No','For Crane / Location','Size / Ratio / Spec','Item','Our Need','In Store','In Workshop','Total','Short','Remarks']);r++;
+  const s0=r,rows=sec.rows,n=Math.max(rows.length,5);
+  for(let i=0;i<n;i++,r++){const d=rows[i]||{},inp=o=>xs.td(i,{c:X_BLUE,...o});
+   const st=num(d.store),sp=num(d.shop),nd=num(d.need),hasT=typeof st==='number'||typeof sp==='number';
+   const tot=hasT?(+st||0)+(+sp||0):'',short=(typeof nd==='number')?Math.max(0,nd-(+tot||0)):'';
+   sh.set(r,1,i+1,xs.td(i));
+   if(sec.spares){sh.set(r,2,d.cranes??null,inp());sh.set(r,3,d.cap??null,inp());sh.set(r,4,d.item??null,inp({h:'left'}))}
+   else{sh.set(r,2,d.crane??null,inp());sh.set(r,3,d.spec??null,inp());sh.set(r,4,d.item??null,inp({h:'left'}))}
+   sh.set(r,5,typeof nd==='number'?nd:null,inp());sh.set(r,6,typeof st==='number'?st:null,inp());sh.set(r,7,typeof sp==='number'?sp:null,inp());
+   sh.set(r,8,{f:`IF(COUNT(F${r}:G${r})=0,"",SUM(F${r}:G${r}))`,v:tot},xs.td(i,{b:1}));
+   sh.set(r,9,{f:`IF(E${r}="","",MAX(0,E${r}-N(H${r})))`,v:short},xs.td(i,{b:1}));
+   sh.set(r,10,d.remark??null,inp({h:'left'}));
+   sh.h(r,Math.max(20,Math.ceil(String(d.remark||'').length/42)*15+4,Math.ceil(String(d.item||'').length/38)*15+4))}
+  sh.cf(`I${s0}:I${r-1}`,[{f:`AND(ISNUMBER($I${s0}),$I${s0}>0)`,d:{b:1,c:'7E0F0F',bg:'FDE3E3'}}]);
+  const sum=c=>rows.reduce((a,x)=>a+(+x[c]||0),0),tt={b:1,sz:11,bd:'thin',h:'center',v:'center'};
+  sh.set(r,1,'TOTAL',{...tt,h:'right',ind:1});sh.merge(r,1,r,4,{...tt,h:'right',ind:1});
+  const tv={E:sec.spares?sum('need'):null,F:sum('store'),G:sum('shop')};
+  sh.set(r,5,sec.spares?{f:`SUM(E${s0}:E${r-1})`,v:tv.E}:null,tt);sh.set(r,6,{f:`SUM(F${s0}:F${r-1})`,v:tv.F},tt);sh.set(r,7,{f:`SUM(G${s0}:G${r-1})`,v:tv.G},tt);
+  sh.set(r,8,{f:`SUM(H${s0}:H${r-1})`,v:tv.F+tv.G},tt);
+  sh.set(r,9,sec.spares?{f:`SUM(I${s0}:I${r-1})`,v:rows.reduce((a,x)=>a+spareShort(x),0)}:null,tt);sh.set(r,10,null,tt);
+  r+=2}
+ return bk}
+const miscOf=cat=>S.misc.filter(x=>x.cat===cat);
+const xGear=()=>xGrid('Gear Coupling & Gearboxes','GEAR COUPLING AND GEARBOXES STOCK RECORD',[
+ {title:'GEAR COUPLINGS & BRAKE DRUMS',spares:1,rows:S.spares},{title:'GEARBOXES',rows:miscOf('Gearbox')},{title:'SHAFTS',rows:miscOf('Shaft')}]);
+const xBrake=()=>xGrid('Brake Thruster & Leather','BRAKE THRUSTER AND BRAKE LEATHER STOCK RECORD',[
+ {title:'BRAKE THRUSTERS',rows:miscOf('Brake thruster')},{title:'BRAKE LEATHERS',rows:miscOf('Brake leather')}]);
+
+// ---------- registry + download
+const XLS={
+ change:{name:'Wire rope change record',file:'Wire_Rope_Change_Record',fn:xChange},
+ inspect:{name:'Wire rope inspection record',file:'Wire_Rope_Inspection_Record',fn:xInspect},
+ maint:{name:'Maintenance record',file:'Maintenance_Record',fn:xMaint},
+ rope:{name:'Wire rope stock record',file:'Wire_Rope_Stock_Record',fn:xRope},
+ gear:{name:'Gear coupling and gearboxes stock record',file:'Gear_Coupling_and_Gearboxes_Stock_Record',fn:xGear},
+ brake:{name:'Brake thruster and brake leather stock record',file:'Brake_Thruster_and_Brake_Leather_Stock_Record',fn:xBrake}};
+function xdl(k){try{const bytes=XLS[k].fn().build();dl(`${XLS[k].file}_${today()}.xlsx`,bytes,XMIME);toast('Excel file downloaded')}catch(e){console.error(e);toast('Could not create the Excel file')}}
+const xbtn=k=>`<button class="btn p" style="width:100%;margin-bottom:8px" onclick="xdl('${k}')">⬇ Download Excel – ${XLS[k].name}</button>`;
+
+
+// ---------- router
+function render(){const p=(location.hash||'#/home').replace(/^#\//,'').split('/').map(decodeURIComponent);
+ const [a,b]=p;
+ if(a==='info')return info(b);
+ if(a==='meas')return meas();
+ if(a==='records'){if(!b)return records();if(b==='inspect')return p[2]?inspectCrane(p[2]):inspectIndex();return listPage(b,'#/records')}
+ if(a==='stocks'){if(!b)return stocks();if(b==='spares')return listPage('spares','#/stocks');if(b==='misc')return listPage('misc','#/stocks');return ropePage()}
+ home()}
+window.addEventListener('hashchange',()=>{Q='';PRESET={};render();window.scrollTo(0,0)});
+render();
+pull();setInterval(()=>{if(!GH.token)pull()},60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)pull()});
+</script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js');});}</script>
+</body></html>
