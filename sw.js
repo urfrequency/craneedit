@@ -2,7 +2,7 @@
    The whole app is a single HTML page with inline script, so caching the
    app shell makes it fully usable with no network. Records live in
    localStorage on the device and are never sent anywhere. */
-const CACHE = 'eot-cranes-v4';
+const CACHE = 'eot-cranes-v3';
 const ROOT = self.registration.scope;
 const SHELL = [
   '', 'manifest.webmanifest',
@@ -34,8 +34,6 @@ self.addEventListener('fetch', (e) => {
   const url = new URL(req.url);
   // Only handle our own origin; leave Netlify's injected scripts etc. alone.
   if (url.origin !== self.location.origin) return;
-  // Live records are always fetched fresh from the network.
-  if (url.pathname.endsWith('/data.json')) return;
 
   // Page loads: network first (fresh app), fall back to the cached shell offline.
   if (req.mode === 'navigate') {
